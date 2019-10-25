@@ -1,0 +1,58 @@
+﻿using NUnit.Framework;
+using SeleniumFramework.Utilities.hooks;
+using SeleniumFramework.Pages.Day0;
+using System.Threading.Tasks;
+
+
+namespace SeleniumFramework.Tests.KMS
+{
+    [TestFixture("parallel", "chrome")]
+    [TestFixture("parallel", "safari")]
+    [TestFixture("parallel", "ie")]
+    [TestFixture("parallel", "firefox")]
+    [Parallelizable(ParallelScope.Fixtures)]
+
+    class MultipleUser : config
+    {
+        public MultipleUser(string profile, string environment)
+                 : base(profile, environment) { }
+
+        VideoStreaming vstream = new VideoStreaming();
+        LoggingActivity logging = new LoggingActivity();
+        string username = "yogee_operator";
+        string password = "Mpassword@123";
+        string mail = "testuserbs007@gmail.com";
+
+        [Test, Description("Scenario 9: Multiple devices (more than 10) access the same link sent by an Operator.")]
+        [Category("Data Dependent")]
+        //[Ignore("StreamingNotWorking")] 
+        public void Multipleusers1()
+        {
+            //string username = testData.ReadData("KMSTests", "username");
+            //string password = testData.ReadData("KMSTests", "password");
+            //string mail = testData.ReadData("KMSTests", "mail");
+
+            logging.Login(username, password);
+            vstream.SendLink(mail);
+
+            vstream.StartAndStopStreamingOnRealDevice1();
+            vstream.VerifyKMSStatus();
+        }
+
+        [Test, Description("Scenario 9: Multiple devices (more than 10) access the same link sent by an Operator.")]
+        [Category("Data Dependent")]
+        public void Multipleusers2()
+        {
+            //string username = testData.ReadData("KMSTests", "username");
+            //string password = testData.ReadData("KMSTests", "password");
+            //string mail = testData.ReadData("KMSTests", "mail");
+
+            logging.Login(username, password);
+            vstream.SendLink(mail);
+
+            vstream.StartAndStopStreamingOnRealDevice1();
+            vstream.VerifyKMSStatus();
+        }
+
+    }
+}

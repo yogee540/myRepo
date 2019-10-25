@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<tests>
+  <TestCase PBI_ID="116719">
+    <TestData>
+      <FilterOptionPW>AAAOffDutyPW</FilterOptionPW>
+      <FilterOptionRes>AAAOffDutyResou</FilterOptionRes>
+      <SetDefaultISSIPWOWin>6744</SetDefaultISSIPWOWin>
+      <PrimaryISSIOFAlreadyBookedPWonRes>6742</PrimaryISSIOFAlreadyBookedPWonRes>
+      <ResInEmergencyWithDefaultAndPrimaryISSI>7891</ResInEmergencyWithDefaultAndPrimaryISSI>
+      <ResInOnDutyStateWithDefaultAndPrimaryISSI>10362</ResInOnDutyStateWithDefaultAndPrimaryISSI>
+    </TestData>
+  </TestCase>
+  <TestCase PBI_ID="108261">
+    <TestData>
+      <FilterOptionPW>AAAOffDutyPW</FilterOptionPW>
+      <FilterOptionRes>AAAOffDutyResou</FilterOptionRes>
+      <PrimaryISSI>5013</PrimaryISSI>
+      <PrimaryISSIAlreadyAssignedToPW>10001</PrimaryISSIAlreadyAssignedToPW>
+      <PrimaryISSIAlreadyAssignedToRes>10036</PrimaryISSIAlreadyAssignedToRes>
+    </TestData>
+  </TestCase>
+  <TestCase PBI_ID="112230">
+    <TestData>
+      <FilterOptionRes>AAAOnDutyResour</FilterOptionRes>
+    </TestData>
+  </TestCase>
+  <TestCase PBI_ID="108263">
+    <TestData>
+      <FilterOptionPW>AAAOffDutyPW</FilterOptionPW>
+      <FilterOptionRes>AAAOffDutyResou</FilterOptionRes>
+      <EndTime>12:15</EndTime>
+    </TestData>
+  </TestCase>
+  <TestCase PBI_ID="109894">
+    <TestData>
+      <FilterOptionPW>AAAOffDutyPW</FilterOptionPW>
+    </TestData>
+  </TestCase>
+  <TestCase PBI_ID="113854">
+    <TestData>
+      <FilterOptionPW>PBI_113854</FilterOptionPW>
+    </TestData>
+  </TestCase>
+  <TestCase PBI_ID="112231">
+    <TestData>
+      <FilterOptionRes>AAAEnRouteResou</FilterOptionRes>
+    </TestData>
+  </TestCase>
+  <TestCase PBI_ID="112209">
+    <TestData>
+      <SelectFilterOptionRes>AAAOffDutyResou</SelectFilterOptionRes>
+       <SelectFilterOptionPW>AAAOffDutyPW</SelectFilterOptionPW>
+    </TestData>
+  </TestCase>
+ <TestCase PBI_ID="120199">
+    <TestData>
+      <SelectFilterResOffDuty>AAAOffDutyResou</SelectFilterResOffDuty>
+      <SelectFilterResOnDuty>AAAAtSceneResou</SelectFilterResOnDuty>
+      <SelectFilterResEnRoutey>AAAEnRouteResou</SelectFilterResEnRoutey>
+      <SelectFilterResAtScene>AAAOffDutyResou</SelectFilterResAtScene>
+      <SelectFilterResEmergency>AAAEmergncyReso</SelectFilterResEmergency>
+      <SelectFilterOptionPW>AAAOffDutyPW</SelectFilterOptionPW>
+      <Name>NewName</Name>
+      <Gender>F Female</Gender>
+    </TestData>
+  </TestCase>
+  <TestCase PBI_ID="116062">
+    <TestData>
+      <FilterOptionRes>AAAEmergncyReso</FilterOptionRes>
+      <CallSign>010</CallSign>
+    </TestData>
+  </TestCase>
+ <TestCase PBI_ID="112236">
+    <TestData>
+      <SelectFilterResOffDuty>AAAOffDutyResou</SelectFilterResOffDuty>
+      <SelectPWwithSkills>AAAPWwithSkills</SelectPWwithSkills>
+    </TestData>
+  </TestCase>
+</tests>

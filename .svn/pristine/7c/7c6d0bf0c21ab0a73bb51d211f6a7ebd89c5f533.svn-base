@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<tests>
+  
+  <TestCase PBI_ID="132433">
+    <TestData>
+      <username>yogee_operator</username>
+      <password>Mpassword@123</password>
+      <!--<username>user12</username>
+      <password>Password@1234</password>-->
+      <mail>testuserbs007@gmail.com</mail>
+    </TestData>
+  </TestCase>
+
+  <TestCase PBI_ID="132431_LoginWithifferentRoles">
+    <TestData>
+      <opusername>auto_operator</opusername>
+      <password>Password@1</password>
+      <adminuser>auto_admin</adminuser>
+      <superuser>auto_superuser</superuser>
+      <supervisor>auto_supervisor</supervisor>
+      <supportop>auto_support_op</supportop>
+    </TestData>
+  </TestCase>
+
+  <TestCase PBI_ID="135008_CreateUserFieldValidation">
+    <TestData>
+      <username>auto_op_admin</username>
+      <password>Password@1</password>
+      <user1>Thisisanextremelylongmessagetocheckthevalidationmsgabovetheupperlimitof100charactersthatweagreedcerta</user1>
+      <password1>thisisalongmessagetocheckthevalidationmsgabovemaxim</password1>
+      <confirmpassword1>thisisalongmessagetocheckthevalidationmsgabovemaxim1</confirmpassword1>
+      <name1>Thisisalongmessagetocheckthevalidationmsgabovemaxim</name1>
+      <surname>Thisisalongmessagetocheckthevalidationmsgabovemaxim</surname>
+      <email>Thisisanextremelylongmessagetocheckthevalidationmsgabovetheupperlimitof100characterst@beatsystems.com</email>
+      <mediadownload>TRUE</mediadownload>
+      <role1>Administrator</role1>
+
+      <usererror>Username is too long (maximum is 100 characters)</usererror>
+      <passworderror1>Password is too long (maximum is 50 characters)</passworderror1>
+      <passworderror2>Password must contain at least one alpha and one numeric character</passworderror2>
+      <passworderror3>Password must contain at least one upper and one lower case character</passworderror3>
+      <confirmpassworderror>Confirm Password must match Password</confirmpassworderror>
+      <firstnameerror>First Name is too long (maximum is 50 characters)</firstnameerror>
+      <surnameerror>Surname is too long (maximum is 50 characters)</surnameerror>
+      <emailerror>Email is too long (maximum is 100 characters)</emailerror>
+      <userexistserror>This username is already in use</userexistserror>
+      <charactererror>'±' character is not allowed</charactererror>
+
+      <nuser1>yogee_operator</nuser1>
+      <npassword1>Password@123</npassword1>
+      <nname1>user1</nname1>
+      <nsurname>admin</nsurname>
+      <nemail>yogesh.pawar@capita.co.uk</nemail>
+      <nmediadownload>TRUE</nmediadownload>
+      <nrole1>Administrator</nrole1>
+    </TestData>
+  </TestCase>
+
+  <TestCase PBI_ID="135035_EditUserFieldValidation">
+    <TestData>
+      <username>auto_op_admin</username>
+      <password>Password@1</password>
+      <user1>Username can't be blank</user1>
+      <name1>First Name can't be blank</name1>
+      <surname>Surname can't be blank</surname>
+      <user2>test_operator</user2>
+    </TestData>
+  </TestCase>
+
+  <TestCase PBI_ID="135040_LoginErrorValidation">
+    <TestData>
+      <username>auto_op_admin</username>
+      <password>Password@1</password>
+      <user1>yogee@gmail.com</user1>
+      <error1>There was an error logging you in. Please contact the system administrator for further assistance.</error1>
+      <error2>You must enter a username and password</error2>
+    </TestData>
+  </TestCase>
+
+  <TestCase PBI_ID="135052_StreamPageFieldValidation">
+    <TestData>
+      <username>yogee_operator</username>
+      <password>Mpassword@123</password>
+      <user1>yogee@</user1>
+      <error1>Not a valid Email Address</error1>
+      <error2>Not a valid Phone Number</error2>
+      <number>9421</number>
+      <email>yogesh.pawar@capita.co.uk</email>
+    </TestData>
+  </TestCase>
+
+  <TestCase PBI_ID="135054_UserRoleValidation">
+    <TestData>
+      <user1>sachin</user1>
+      <password1>Capita#123</password1>
+      <user2>auto_op_admin</user2>
+      <password2>Password@1</password2>
+    </TestData>
+  </TestCase>
+
+  <TestCase PBI_ID="136363_UserActivityValidation">
+    <TestData>
+      <username>auto_admin</username>
+      <password>Password@1</password>
+    </TestData>
+  </TestCase>
+
+  <TestCase PBI_ID="132430_UpdateUserPassword">
+    <TestData>
+      <Admin_Username>auto_admin</Admin_Username>
+      <Admin_Password>Password@1</Admin_Password>
+      <user_name>auto_temp_operator</user_name>
+      <newPass>Password@1</newPass>
+    </TestData>
+  </TestCase>
+
+  <TestCase PBI_ID="132429_AddUserAdminOpSupervisor">
+    <TestData>
+      <Admin_Username>auto_admin</Admin_Username>
+      <Admin_Password>Password@1</Admin_Password>
+      <Email>mayank.tripathi@capita.co.uk</Email>
+    </TestData>
+  </TestCase>
+
+  <TestCase PBI_ID="132428_AppLaunchAndVerify">
+    <TestData>
+      <Admin_Username>auto_admin</Admin_Username>
+      <Admin_Password>Password@1</Admin_Password>
+    </TestData>
+  </TestCase>
+
+</tests>
+

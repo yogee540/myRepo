@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<tests>
+  
+  <TestCase PBI_ID="132569">
+    <TestData>
+      <Username>auto_superadmin</Username>
+      <Password>Password@1</Password>
+      <OrganisationName>automation44</OrganisationName>
+    </TestData>
+  </TestCase>
+
+     
+    
+  <TestCase PBI_ID="132438_VerifyGeneratedReportForSingleOrg">
+    <TestData>
+      <Username>auto_superuser</Username>
+      <Password>Password@1</Password>
+      <orgValue>QA Capita Admin Organisation</orgValue>
+      <header>Report - </header>
+      <field1>Sessions:</field1>
+      <field2>Empty Sessions:</field2>
+      <field3>Videos Uploaded</field3>
+      <field4>Photos Uploaded:</field4>
+      <field5>Media-total:</field5>
+      <field6>Media-size (MB):</field6>
+      <field7>Media-viewed (MB):</field7>
+      <field8>SMS Messages:</field8>
+      <field9>Active Operators:</field9>
+      <column1>Date/Time</column1>
+      <column2>Operator</column2>
+      <column3>Reference</column3>
+      <column4>Device</column4>
+      <column5>Location</column5>
+      <column6>Photos</column6>
+      <column7>Videos</column7>
+      <column8>Media-Size (MB)</column8>
+    </TestData>
+  </TestCase>
+
+  <TestCase PBI_ID="132437_1_VerifyDownloadAuditPDFButton">
+    <TestData>
+      <Username_superadmin>auto_superadmin</Username_superadmin>
+      <Username_admin>migadmin</Username_admin>
+      <Username_supervisor>auto_supervisor</Username_supervisor>
+      <Username_operator>yogee_operator</Username_operator>
+      <Username_supportoperator>auto_support_op</Username_supportoperator>
+      <password>Mpassword@123</password>
+      <Password>Test@123</Password>
+      <Tab_Activities>Activities</Tab_Activities>
+      <SelectDate>This Month</SelectDate>
+    </TestData>
+  </TestCase>
+
+  <TestCase PBI_ID="132437_2_VerifyDownloadAuditPDFButtonForUserRoles">
+    <TestData>
+      <Username_admin>migadmin</Username_admin>
+      <Username_superoperator>auto_support_op</Username_superoperator>
+      <Password>Test@123</Password>
+      <Tab_Activities>Activities</Tab_Activities>
+      <PDFName>Session Audit Log.pdf</PDFName>
+    </TestData>
+  </TestCase>
+</tests>
+

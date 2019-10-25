@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TestRunConfiguration>
+  <Environment>QA</Environment>
+  <Execution>Server</Execution>
+  <URL1>https://autoqatesting.eye999.co.uk/eye/login</URL1>
+  <URL2>https://qatesting.eye999.co.uk/eye/login</URL2>
+  <URL3>https://9idevtest01.eye999.co.uk/eye/login</URL3>
+  <!-- To run test on Pre-Prod there are restrictions for Superuser
+  Please contact Ciepiaszuk, Tomasz (Secure Solutions & Services) <Tomasz.Ciepiaszuk@capita.co.uk>  for access-->
+  <!--CHROME-->
+  <!--IE    not implemented-->
+  <!--FIREFOX    not implemented-->
+  <!--EDGE    not implemented-->
+  <!--Below are the headless browsers-->
+  <!--PHANTOMJS    not implemented-->
+  <!--HTMLUNIT     not implemented-->
+  <!--CHROMEHEADLESS-->
+  <Browser>CHROME</Browser>
+  <APIURL1>https://autoqatesting.eye999.co.uk/eye-service/resource/</APIURL1>
+  <APIURL2>https://qatesting.eye999.co.uk/eye-service/resource/</APIURL2>
+  <APIURL3>https://9idevtest01.eye999.co.uk/eye-service/resource/</APIURL3>
+  <!-- FOR PRE-PROD Create a superuser with admin role and get it's authkey from Network and create new tags for-->
+
+  <!-- Auth Key For AutoQA Testing env. -->
+  <QA_Scheme1>YXV0b3FhdGVzd</QA_Scheme1>
+  <QA_AuthKey1>GluZ8Kxc2FjaGluwrE6UlNBMjA0ODoxemg5ZzZpblI0VzZ4MGxzYUNvR3RxcjJNZjkzMnhhZlhpcGhKMzEwRXRtM1ZXeFh2QlJNcFQycEI5cFpLT2x0N0V5L3dwY2VVUS9oR0RaY1h6VjJLOWg3eHZFY1V5UnhzYk1jaGpNeTFNMWErRkp2TDkwU1paaUE1R01LeWpZdHZVeHpHZGlFUk8wYXVQYXJDS3RwNmVhdnMwc3o4NmJSWG5pZHJlY2paRjA5MUJqRmovRkFwaHBKU0RHNk0zK0JDdnkxYTBBRzIvOXR5Y1dRL1NFWnBwcCtjOGJHZkZvNlN4N3JQYUxGbE41RE14djlJK3A1MDhXc2hDOHIrUzlBcExZU0tUOTdSajVrb2tBQU8vTFFGaXNicXBQNVE2dDgrSlBoWFhMTTJhK3IrQUNWTkVOb0VNWlJKdjIrcGx6MUE3UXJkL0p0OSs2VHZNTE5aQW4vMnc9PQ==</QA_AuthKey1>
+  <QA_SessionId1>8df2f281ea7e8e17a01ccc8eac45b747</QA_SessionId1>
+
+  <QA_Scheme2>YXV0b3Fhd</QA_Scheme2>
+  <QA_AuthKey2>GVzdGluZ8KxdXBkYXRldXNlcsKxOlJTQTIwNDg6VGVESmhDREdISjBnTVZmZk90ZHpSeFFLL0Q3aUIrNWgrOU1RUjYwNjU5b2lRZHhtZkJnaXpSakhJZVRtRi85Z3JGODMyRSt4K1pSek1hUjRDVWYrQkFPRzdJenQyY3YrKzhtOXVhVGlTMEJTd3dJWTVSQjVMQzYvQ1RHOEtIQ0kwL3ZxSW9rTTljZ09MVzlXSEZEbkgxdnFxMVNVQUpPQWRrWDdIRWx0dEJ5Z3YyRWdmRTdDVnQ2ZHlWa25Zbk1DUUZWUWEwK1FadlNYNEF1WEgxZjdyTGZRWUJaNTRhUGVnR29nZ28yUXBWN0xFajdmOUVwS3RzRDE3d2pFU01GbWFoNzN2R3JxNVJWTVlXSi8xTHhPMXpQN1VsQzMvM09LOEo5RGhpcFFhVUI2VkF4RkFFckZCV2MvSXVYZWlDWmtIOW5xUlArKzM2ZHZ3N3g5cFluUWVnPT0=</QA_AuthKey2>
+  <QA_SessionId2></QA_SessionId2>
+
+  <!-- Auth Key For QA env. -->
+  <QAE_Scheme1>cWF0ZXN0aW5nwr</QAE_Scheme1>
+  <QAE_AuthKey1>FzYWNoaW7CsTpSU0EyMDQ4OjRYblVVeWIwSXE2U1VjRUdEcWU1M3lJZWpRQllPK0h3aTRuOXBzRFlML1gvbGh6akNlRUIrQ081NkNac2dXOEJJaXBWUjh6WUROVDFmWkxERzJXKzN3TEQzdDk0M2ZWeUNwZTFUaDJIWFlYa0ptbjltTEFxMU84VDBGVVlLYy8zN0M4UXJWM2pkYUt0cTU3NEpIYWR6SXl6R2tPWFJSUXdtYUx0dVVWcXNBdDlxRDBSUnpnZUk5VlhYOFJYZFovdzN4QlpsNW5wbDFWWWdWSEJWKzNqZTYwMEJmWXQ1b3B0VnJMZ2xiMUdiWThwVjVab256NG9CWWVTM0RITW9taVNTR0ZPUm95UzdqRW9SaS9pNjZOYSsxMWw1ajdnK3VnRzlrTHJJeGlvWlhLRFFVTEpmcTNLQ0tIb2UzR1ZuelZJcTJ5bFh6ckdBSENGYVQ0citaM0l0Zz09</QAE_AuthKey1>
+  <QAE_SessionId1>d6dca9781a05353ca9cbb72cf3e823e5</QAE_SessionId1>
+
+  <QAE_Scheme2>YXV0b3FhdGVzd</QAE_Scheme2>
+  <QAE_AuthKey2>W5nwrF1cGRhdGV1c2VywrE6UlNBMjA0ODp6OWNXRUo5YTNmRzJZWmZuUVRoNW1WUzc1YU5NN0xBcFJJeElicUpiUitCZS90K3gwM2xqemVOa05TSEY4ZGVzUjNJT0J1SG1rT2hsclpJMFNUYUhQUFF4bHhSN1V2VVZwY0x1cDlVSTlaZHhIY2JJUy80V3lBeTh3U2xub2JMY25uVnRnNTdrbVZ4bjBLL05TUVVrNkdLbUhJVDlkRHFITHRuc0VnUlQyY1NadnVmV253YXBvYzRSbFVqd1pOenFRc2dxaWwvWEhLTkFzY0h3TklTZFp3bktLekhDMjE0M0Rsa1NDaGk5NVo0eHArdEJSSUtFUGUyL1JVYXRQaHdHZ0I3UGd1SUgyOVowK1lxT1ZhWENwYTVaWUxoM09hWFRuZTFGczI2N0c0OVJtNDRtRTkyTlo5TDZCZlk0L0R6aElQcFVjSVk1b05wYnpBd0tUdUdWNWc9PQ==</QAE_AuthKey2>
+  <QAE_SessionId2></QAE_SessionId2>
+  
+  <BrowserStackConfiguration>
+    <Server>hub-cloud.browserstack.com</Server>
+    <UserKey>yogeshpawar7</UserKey>
+    <AccessKey>jvhFGqXMWapAU5hKkxnm</AccessKey>
+    <!-- <UserKey>priyank73</UserKey>
+    <AccessKey>JkKcs5HJapnrpzdHXrft</AccessKey>-->
+    <BrowserName>Chrome</BrowserName>
+    <BrowserVersion>11.0</BrowserVersion>
+    <Device>iPhone X</Device>
+    <OSVersion>11.0</OSVersion>
+    <realmobile>true</realmobile>
+    <local>false</local>
+    <DeviceOrientation>portrait</DeviceOrientation>
+    <browserstack.debug>true</browserstack.debug>
+  </BrowserStackConfiguration>
+
+  <capabilities>
+    <parallel>
+      <add key="browserstack.debug" value="true" />
+    </parallel>
+  </capabilities>
+
+  <ReportConfiguration>
+    <ReportType>Extent</ReportType>
+    <ScreenshotType>None</ScreenshotType>
+    <!--ScreenshotType-->
+    <!--External-->
+    <!--Embedded-->
+    <VideoRecording>No</VideoRecording>
+  </ReportConfiguration>
+
+
+
+
+</TestRunConfiguration>

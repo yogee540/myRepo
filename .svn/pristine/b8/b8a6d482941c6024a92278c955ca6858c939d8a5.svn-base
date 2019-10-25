@@ -1,0 +1,541 @@
+﻿using AventStack.ExtentReports;
+using OpenQA.Selenium;
+using SeleniumFramework.BusinessFunctions;
+using SeleniumFramework.Pages.Day0;
+using SeleniumFramework.UIOperations;
+using SeleniumFramework.Utilities.reportUtil;
+using System;
+using System.Collections.Generic;
+
+namespace SeleniumFramework.Pages
+{
+    class OrganisationPage : UIActions
+    {
+
+        CommonFeatures commonFeatures = new CommonFeatures();
+        LoginPage log_page = new LoginPage();
+        UsersPage userPage = new UsersPage();
+
+        bool result = false;
+
+        public static IWebElement clndr_StartDate => driver.FindElement(By.Id("start-date"));
+        public static IWebElement Link_Edit => driver.FindElement(By.XPath("//a[text()='Edit']"));
+        public static IWebElement lnk_Miscellaneous => driver.FindElement(By.Id("tab-misc"));
+        public static IWebElement txt_RenewalPeriod => driver.FindElement(By.Id("renewal-period-min-length"));
+        public static IWebElement lnk_OrganisationsTab => driver.FindElement(By.XPath("//a[@id='organisation-tab']/parent::li"));
+        public static IWebElement btn_Add => driver.FindElement(By.Id("add-user-button"));
+        public static IWebElement slct_SelectTemplate => driver.FindElement(By.Id("select-template"));
+        public static IWebElement btn_Confirm => driver.FindElement(By.XPath("//button[text()='Confirm'][@type='button']"));
+        public static IWebElement btn_Cancel => driver.FindElement(By.XPath("//button[text()='Cancel'][@type='button']"));
+        public static IWebElement txt_ShortName => driver.FindElement(By.Id("short-name"));
+        public static IWebElement txt_FullName => driver.FindElement(By.Id("full-name"));
+        public static IWebElement btn_Save => driver.FindElement(By.Id("save"));
+        public static IWebElement clndr_TerminationDate => driver.FindElement(By.Id("end-date"));
+        public static IWebElement btn_Delete => driver.FindElement(By.XPath("//button[text()='Delete'][@type='button']"));
+        public static IWebElement Select_Type => driver.FindElement(By.XPath("//span[text()='Type *']/parent::div/select"));
+        public static IWebElement Select_Country => driver.FindElement(By.XPath("//span[text()='Country *']/parent::div/select"));
+        public static IWebElement Header_OperatorGuidance => driver.FindElement(By.XPath("//span[@id='opGuidance']//p"));
+        public static IWebElement Link_OperatorBranding => driver.FindElement(By.XPath("//a[contains(text(),'Operator Branding')]"));
+        public static IWebElement Textarea_OperatorGuidance => driver.FindElement(By.XPath("//span[text()='Operator guidance HTML']//following-sibling::textarea"));
+        public static IWebElement HelpIcon_GuidanceHTML => driver.FindElement(By.XPath("//span[text()='Operator guidance HTML']/parent::div//i"));
+        public static IWebElement ToolTip => driver.FindElement(By.XPath("//div[@class='tooltip-inner']"));
+        public static IWebElement ErrorMsg_DuplicateOrg => driver.FindElement(By.XPath("//span[text()='Conflict error. See you system administrator']"));
+        public static IWebElement txt_Search => driver.FindElement(By.CssSelector(".form-control.input-sm"));
+        public static IWebElement btn_Add_Org => driver.FindElement(By.Id("add-user-button"));
+        public static IWebElement Lnk_Operator_Branding => driver.FindElement(By.XPath("//a[contains(text(),'Operator Branding')]"));
+        public static IWebElement DrpDwn_Theme => driver.FindElement(By.XPath("//span[text()='Theme *']//following-sibling::select[@class='form-control']"));
+        public static IWebElement Theme_911 => driver.FindElement(By.XPath("//img[@src='/eye/branding/911eye/product-logo.png']"));
+        public static IWebElement Theme_999Eye => driver.FindElement(By.XPath("//img[@src='/eye/branding/999eye/product-logo.png']"));
+        public static IWebElement Theme_Blank => driver.FindElement(By.XPath("//img[@src='/eye/branding//product-logo.png']"));
+        IWebElement Lnk_Security => driver.FindElement(By.XPath("//a[contains(text(),'Security')]"));
+        IWebElement Txt_Security_PrevPassword => driver.FindElement(By.Id("previous-passwords"));
+
+        By HeadingOrganisation = By.XPath("//h2[@class='display-inline-block margin-bottom-10px'][text()='Organisations']");
+
+        public string OrganisationHeader = "Organisations";
+        public string Guidance_TooltipText = "Enter HTML text to display on organisation 'Start Stream' page (optional).";
+        public string GuidanceHTML = "//span[@id='opGuidance']//p";
+        public string OrgName;
+
+        public bool VerifyOrganisationPage()
+        {
+            return VerifyPageLoaded(HeadingOrganisation, OrganisationHeader);
+        }
+
+        public void CreateOrganisation(string OrgName)
+        {
+            try
+            {
+                if (!lnk_OrganisationsTab.GetAttribute("class").Equals("active"))
+                {
+                    ClickOn(lnk_OrganisationsTab);
+                }
+                ClickOn(btn_Add);
+                WaitForObject(slct_SelectTemplate);
+                SelectFromDropDown(SelectionType.selectByText, slct_SelectTemplate, "Default");
+                Wait(2);
+                ClickOn(btn_Confirm);
+                Wait(2);
+                Set_Textbox(txt_ShortName, OrgName);
+                Set_Textbox(txt_FullName, OrgName);
+                ClickOn(btn_Save);
+                Wait(2);
+                ClickOn(btn_Save);
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public void VerifyDupliacteErrorMsg()
+        {
+            try
+            {
+                if (ErrorMsg_DuplicateOrg.Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Error Message Displayed");
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public OrganisationPage SearchAndEditOrganisation(string OrganisationName, string Value)
+        {
+            commonFeatures.Search(OrganisationName);
+            ClickOn(Link_Edit);
+            ClickOn(Link_OperatorBranding);
+            EnterText(Textarea_OperatorGuidance, Value);
+            TakeScreenshot();
+            ClickOn(btn_Save);
+            VerifyOrganisationPage();
+            ExtentReportUtil.report.Log(Status.Pass, "Searched -- <b>" + OrganisationName + "</b> and changed value for Operator Guidance as -- <b>" + Value + "</b>.");
+
+            return new OrganisationPage();
+        }
+
+        public OrganisationPage EditOrganisation(string SelectOrgType, string SelectOrgCountry)
+        {
+            ClickOn(Link_Edit);
+            SelectType(SelectOrgType);
+            SelectCountry(SelectOrgCountry);
+            ClickOn(btn_Save);
+            return new OrganisationPage();
+        }
+
+        //This method is for creating an organisation with random/unique name
+        public void CreateUniqueOrganisation(string OrgName)
+        {
+            try
+            {
+                int num = new Random().Next(1000, 9999);
+                this.OrgName = OrgName + num;
+                CreateOrganisation(this.OrgName);
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public void VerifyOrganisationCreated()
+        {
+            By OrganisationName_Xpath = By.XPath("//td[text()='Organisation created: [" + OrgName + "]']");
+            try
+            {
+                if (driver.FindElement(OrganisationName_Xpath).Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Organisation created and displayed in activity -- " + OrgName);
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public void VerifyOrganisationUpdated(string OrgName)
+        {
+
+            By OrganisationName_Xpath = By.XPath("//td[text()='Organisation updated: [" + OrgName + "]']");
+            try
+            {
+                if (driver.FindElement(OrganisationName_Xpath).Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Organisation updated and displayed in activity -- " + OrgName);
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public OrganisationPage ClearGudanceHTML(string OrganisationName)
+        {
+            commonFeatures.Search(OrganisationName);
+            ClickOn(Link_Edit);
+            ClickOn(Link_OperatorBranding);
+            ClearText(Textarea_OperatorGuidance);
+            ClickOn(btn_Save);
+            VerifyOrganisationPage();
+            return new OrganisationPage();
+        }
+
+        public string CheckRenewalPeriod(string OrgName)
+        {
+            try
+            {
+                if (!commonFeatures.Search(OrgName))
+                {
+                    CreateOrganisation(OrgName);
+                    commonFeatures.Search(OrgName);
+                }
+
+                IWebElement lnk_Edit = driver.FindElement(By.XPath("//td[contains(text(),'" + OrgName + "')]/../td/a[text()='Edit']"));
+                ClickOn(lnk_Edit);
+                WaitForObject(lnk_Miscellaneous);
+                if (!lnk_Miscellaneous.GetAttribute("class").Equals("active"))
+                {
+                    ClickOn(lnk_Miscellaneous);
+                    WaitForObject(txt_RenewalPeriod);
+                    TakeScreenshot();
+                    if (txt_RenewalPeriod.GetAttribute("value").Equals("30"))
+                    {
+                        ExtentReportUtil.report.Log(Status.Info, "The Renewal Period label is present with the default value 30.");
+                    }
+                    else
+                    {
+                        ExtentReportUtil.report.Log(Status.Info, "The Renewal Period label is present with the default value " + txt_RenewalPeriod.GetAttribute("value") + ".");
+                    }
+                    ClickOn(btn_Save);
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occured: " + ex.ToString());
+            }
+            return txt_RenewalPeriod.GetAttribute("value");
+        }
+
+        /*
+        public bool DeleteOrganisation(string OrgName)
+        {
+            try
+            {
+                if (!commonFeatures.Search(OrgName))
+                {
+                    CreateOrganisation(OrgName);
+                    commonFeatures.Search(OrgName);
+                }
+
+                string Org_Status = commonFeatures.CheckStatus(OrgName);
+                if (Org_Status.Equals("Active"))
+                {
+                    int RenewalPeriod = Convert.ToInt32(CheckRenewalPeriod(OrgName));
+                    int toSub = (RenewalPeriod + 1) * (-1);
+                    DateTime dateTime = DateTime.UtcNow.Date;
+
+                    DateTime newDateTime = dateTime.AddDays(toSub).Date;
+                    string ddmmyyyy = newDateTime.ToString("dd/MM/yyyy");
+
+                    commonFeatures.Search(OrgName);
+                    IWebElement lnk_Edit = driver.FindElement(By.XPath("//td[contains(text(),'" + OrgName + "')]/../td/a[text()='Edit']"));
+                    ClickOn(lnk_Edit);
+                    commonFeatures.SelectDate(clndr_TerminationDate, ddmmyyyy);
+                    Wait(5);
+                    ClickOn(btn_Save);
+                    DeleteOrganisation(OrgName);
+                }
+                else if (Org_Status.Equals("Expired"))
+                {
+                    IWebElement lnk_Delete = driver.FindElement(By.XPath("//td[contains(text(),'" + OrgName + "')]/../td/a[text()='Delete']"));
+                    ClickOn(lnk_Delete);
+                    WaitForObject(btn_Delete);
+                    if (btn_Delete.Displayed)
+                    {
+                        ExtentReportUtil.report.Log(Status.Info, "Delete Organisation Modal pop-up is dispayed.");
+                        ClickOn(btn_Delete);
+                        Wait(1);
+                        TakeScreenshot();
+
+                        if (driver.PageSource.Contains("deleted successfully"))
+                        {
+                            ExtentReportUtil.report.Log(Status.Pass, "Organisation '" + OrgName + "' deleted successfully.");
+                            result = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occured: " + ex.ToString());
+            }
+            return result;
+        }
+        */
+
+        public OrganisationPage SelectType(string SelectByText)
+        {
+            SelectFromDropDown(SelectionType.selectByText, Select_Type, SelectByText);
+            return new OrganisationPage();
+        }
+
+        public OrganisationPage SelectCountry(string SelectByText)
+        {
+            SelectFromDropDown(SelectionType.selectByText, Select_Country, SelectByText);
+            return new OrganisationPage();
+        }
+
+        public OrganisationPage VerifyGuidanceToolTip(string OrganisationName, string TextToVerify)
+        {
+            try
+            {
+                commonFeatures.Search(OrganisationName);
+                commonFeatures.ClickEdit();
+                ClickOn(Link_OperatorBranding);
+                ClickOn(HelpIcon_GuidanceHTML);
+                string value = ToolTip.Text;
+                if (value.Contains(TextToVerify))
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Matches with expected Value -- " + TextToVerify);
+                }
+                else
+                {
+                    ExtentReportUtil.report.Log(Status.Fail, "Values do not match. Actual Value --  " + value);
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Fail, "Exception occurred in VerifyGuidanceToolTip() method " + ex.ToString());
+            }
+            return new OrganisationPage();
+        }
+
+        public void VerifyOperatorGuidance(string TextToVerify)
+        {
+            try
+            {
+                if (Header_OperatorGuidance.Text.Contains(TextToVerify))
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Matches with expected Value -- " + TextToVerify);
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Fail, "Exception occurred in VerifyOperatorGuidance() method " + ex.ToString());
+                TakeScreenshot();
+            }
+        }
+
+        public void ElementNotPresent_GuidanceHTML()
+        {
+            ElementNotPresent(GuidanceHTML);
+        }
+
+        public void VerifyChangedOrgTheme_OrgA(string Org_Name, string EditLnk, string value)
+        {
+            Wait(4);
+            EnterText(txt_Search, Org_Name);
+            Wait(1);
+            Click_EventByData(EditLnk);  //Edit,0
+            ClickOn(Lnk_Operator_Branding);
+            SelectFromDropDown(SelectionType.selectByText, DrpDwn_Theme, value);
+            ClickOn(btn_Save);
+            Wait(1);
+        }
+
+        public void VerifyChangedOrgTheme_911()
+        {
+            CheckIfElementIsPresent(Theme_911);
+        }
+
+        public void VerifyChangedOrgTheme_999Eye()
+        {
+            CheckIfElementIsPresent(Theme_999Eye);
+        }
+
+        public void VerifyChangedOrgTheme_Blank()
+        {
+            CheckIfElementIsPresent(Theme_Blank);
+        }
+
+        public void SetCheckbox_NotAllowingPreviousPassword(string Org_Name, string Value, string user_name, string newPass)
+        {
+            try
+            {
+                Wait(4);
+                EnterText(txt_Search, Org_Name);
+                Wait(1);
+                ClickOn(Link_Edit);  
+                ClickOn(Lnk_Security);
+                EnterText(Txt_Security_PrevPassword, Value);
+                Wait(2);
+                ClickOn(btn_Save);
+                Wait(2);
+                userPage.ChangeUserPassword(user_name, newPass);
+                log_page.LogOffFromApplication();
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public bool DeleteOrganisation(string OrgName, string TerminationDateState = "MoreThanRenewalPeriod")
+        {
+            try
+            {
+                if (!commonFeatures.Search(OrgName))
+                {
+                    CreateOrganisation(OrgName);
+                    commonFeatures.Search(OrgName);
+                }
+
+                string Org_Status = commonFeatures.CheckStatus(OrgName);
+                if (Org_Status.Equals("Active"))
+                {
+                    int RenewalPeriod = Convert.ToInt32(CheckRenewalPeriod(OrgName));
+                    int toSub = 0;
+                    switch (TerminationDateState)
+                    {
+                        case "LessThanRenewalPeriod":
+                            toSub = (RenewalPeriod - 1) * (-1);
+                            break;
+                        case "EqualToRenewalPeriod":
+                            toSub = (RenewalPeriod) * (-1);
+                            break;
+                        case "MoreThanRenewalPeriod":
+                            toSub = (RenewalPeriod + 1) * (-1);
+                            break;
+                    }
+
+                    DateTime dateTime = DateTime.UtcNow.Date;
+
+                    DateTime newDateTime = dateTime.AddDays(toSub).Date;
+                    string ddmmyyyy = newDateTime.ToString("dd/MM/yyyy");
+
+                    commonFeatures.Search(OrgName);
+                    IWebElement lnk_Edit = driver.FindElement(By.XPath("//td[contains(text(),'" + OrgName + "')]/../td/a[text()='Edit']"));
+                    ClickOn(lnk_Edit);
+                    commonFeatures.SelectDate(clndr_TerminationDate, ddmmyyyy);
+                    Wait(5);
+                    ClickOn(btn_Save);
+                    DeleteOrganisation(OrgName);
+                }
+                else if (Org_Status.Equals("Expired"))
+                {
+                    IWebElement lnk_Delete = driver.FindElement(By.XPath("//td[contains(text(),'" + OrgName + "')]/../td/a[text()='Delete']"));
+                    ClickOn(lnk_Delete);
+                    WaitForObject(btn_Delete);
+                    if (btn_Delete.Displayed)
+                    {
+                        ExtentReportUtil.report.Log(Status.Info, "Delete Organisation Modal pop-up is dispayed.");
+                        ClickOn(btn_Delete);
+                        Wait(1);
+                        TakeScreenshot();
+                        Wait(1);
+                        if (driver.PageSource.Contains("deleted successfully") && TerminationDateState.Equals("MoreThanRenewalPeriod"))
+                        {
+                            ExtentReportUtil.report.Log(Status.Pass, "Organisation '" + OrgName + "' deleted successfully.");
+                            result = true;
+                        }
+                        else if (driver.PageSource.Contains("cannot be deleted") && driver.PageSource.Contains("under a renewal period.") && TerminationDateState.Equals("LessThanRenewalPeriod"))
+                        {
+                            ExtentReportUtil.report.Log(Status.Pass, "Organisation '" + OrgName + "' cannot be deleted as it's under a renewal period.");
+                            result = true;
+                        }
+                        else if (driver.PageSource.Contains("cannot be deleted") && driver.PageSource.Contains("there is an active media") && TerminationDateState.Equals("EqualToRenewalPeriod"))
+                        {
+                            ExtentReportUtil.report.Log(Status.Pass, "Organisation '" + OrgName + "' cannot be deleted as there is an active media.");
+                            result = true;
+                        }
+                        else if (driver.PageSource.Contains("cannot be deleted") && driver.PageSource.Contains("under a renewal period.") && TerminationDateState.Equals("MoreThanRenewalPeriod"))
+                        {
+                            int RenewalPeriod = Convert.ToInt32(CheckRenewalPeriod(OrgName));
+                            int toSub = (RenewalPeriod + 1) * (-1);
+
+                            DateTime dateTime = DateTime.UtcNow.Date;
+
+                            DateTime newDateTime = dateTime.AddDays(toSub).Date;
+                            string ddmmyyyy = newDateTime.ToString("dd/MM/yyyy");
+
+                            commonFeatures.Search(OrgName);
+                            IWebElement lnk_Edit = driver.FindElement(By.XPath("//td[contains(text(),'" + OrgName + "')]/../td/a[text()='Edit']"));
+                            ClickOn(lnk_Edit);
+                            commonFeatures.SelectDate(clndr_TerminationDate, ddmmyyyy);
+                            Wait(5);
+                            ClickOn(btn_Save);
+                            DeleteOrganisation(OrgName);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occured: " + ex.ToString());
+            }
+            return result;
+        }
+
+        public void ChangeOrganisationDate(string OrgName, string dateField, string date = "27/01/2024")
+        {
+            try
+            {
+                if (!commonFeatures.Search(OrgName))
+                {
+                    CreateOrganisation(OrgName);
+                    commonFeatures.Search(OrgName);
+                }
+
+                IWebElement lnk_Edit = driver.FindElement(By.XPath("//td[contains(text(),'" + OrgName + "')]/../td/a[text()='Edit']"));
+                ClickOn(lnk_Edit);
+                IWebElement fieldElement = null;
+                if (dateField.Equals("Termination date"))
+                {
+                    fieldElement = clndr_TerminationDate;
+                }
+                else if (dateField.Equals("Start date"))
+                {
+                    fieldElement = clndr_StartDate;
+                }
+                commonFeatures.SelectDate(fieldElement, date);
+                Wait(5);
+                ClickOn(btn_Save);
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occured: " + ex.ToString());
+            }
+        }
+
+        public void CreateUserIfNotForOrganisation(string OrgName, List<string> userInfo)
+        {
+            try
+            {
+                if (!commonFeatures.Search(OrgName))
+                {
+                    CreateOrganisation(OrgName);
+                    commonFeatures.Search(OrgName);
+                }
+
+                IWebElement lnk_Users = driver.FindElement(By.XPath("//td[contains(text(),'" + OrgName + "')]/../td/a[text()='Users']"));
+
+                ClickOn(lnk_Users);
+                Wait(2);
+                if (!commonFeatures.Search(userInfo[0]))
+                {
+                    new LoggingActivity().CreateUser(userInfo);
+                    Wait(5);
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occured: " + ex.ToString());
+            }
+        }
+    }
+}

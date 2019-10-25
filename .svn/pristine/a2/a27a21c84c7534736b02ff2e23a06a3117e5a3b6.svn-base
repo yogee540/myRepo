@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<tests>
+
+  <TestCase PBI_ID="OperatorKillsBrowser">
+    <TestData>
+      <username>yogee_operator</username>
+      <password>Mpassword@123</password>
+      <!--<username>user12</username>
+      <password>Password@1234</password>-->
+      <mail>testuserbs007@gmail.com</mail>
+    </TestData>
+  </TestCase>
+
+  <TestCase PBI_ID="CallerKillsBrowser">
+    <TestData>
+      <username>yogee_operator</username>
+      <password>Mpassword@123</password>
+      <!--<username>user12</username>
+      <password>Password@1234</password>-->
+      <mail>testuserbs007@gmail.com</mail>
+    </TestData>
+  </TestCase>
+
+</tests>

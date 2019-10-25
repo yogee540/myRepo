@@ -1,0 +1,361 @@
+﻿using AventStack.ExtentReports;
+using OpenQA.Selenium;
+using SeleniumFramework.UIOperations;
+using SeleniumFramework.Utilities.reportUtil;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+using SeleniumFramework.Pages;
+
+namespace SeleniumFramework.Pages.Day2
+{
+    class ReportsPage : UIActions
+    {
+
+        public static IWebElement Link_ReportsTab => driver.FindElement(By.CssSelector("a#reports-tab"));
+        public static IWebElement Select_ReportType => driver.FindElement(By.CssSelector("select#cardtype"));
+        public static IWebElement Span_ReportType_Label => driver.FindElement(By.XPath("//span[text()='Report Type *']"));
+
+        public static IWebElement H2_Report_Header => driver.FindElement(By.CssSelector("div.col-lg-10.col-md-10.col-sm-10.col-xs-10.col-lg-offset-1.col-md-offset-1.col-sm-offset-1.col-xs-offset-1 h2"));
+        public static IWebElement Span_Org_Label => driver.FindElement(By.XPath("//div[@class='panel-body']/div/span[text()='Organisation']"));
+
+        public static IWebElement Span_Date_Label => driver.FindElement(By.XPath("//div[@class='panel-body']/div/span[text()='Date *']"));
+
+        public static IWebElement Label_Value_Org_admin => driver.FindElement(By.XPath("//label[@id='currentOrgnm']"));
+
+        public static IWebElement Button_Generate_Report => driver.FindElement(By.CssSelector("button#generate-report-button"));
+
+        public static IWebElement Div_Date_Range_box => driver.FindElement(By.CssSelector("div#reportrange"));
+
+        public static List<IWebElement> Li_Date_Ranges => driver.FindElements(By.XPath("//div[@class='ranges']/ul/li")).ToList();
+
+        public static IWebElement Select_Value_Org_superuser => driver.FindElement(By.XPath("//select[@id='reportDatePicker']"));
+
+        public static IWebElement Select_Org => driver.FindElement(By.CssSelector("select#reportDatePicker"));
+        public static IWebElement Li_DateRange_Today => driver.FindElement(By.XPath("//li[text()='Today']"));
+
+        public static IWebElement H2_ReportResull_Title => driver.FindElement(By.XPath("//h2[@class='display-inline-block margin-bottom-10px']"));
+
+        public static IWebElement Button_BackToReport => driver.FindElement(By.XPath("//button[@id='return-to-report-list-button']"));
+        public static IWebElement Div_ReportDateRange_ResultPage => driver.FindElement(By.XPath("//div[@id='reportrange1']"));
+
+        public static IWebElement H4_DownloadLabel_ResultPage => driver.FindElement(By.XPath("//h4[text() = 'Download: ']"));
+
+        public static IWebElement Button_DownloadPDF => driver.FindElement(By.XPath("//button[text()=' PDF']"));
+
+        public static IWebElement Button_DownloadExcel => driver.FindElement(By.XPath("//button[text()=' Excel']"));
+
+        public static IWebElement H3_SummaryTableHeader => driver.FindElement(By.CssSelector("table#report-summary-table1 h3"));
+
+        public static List<IWebElement> Td_SummaryFieldLabels => driver.FindElements(By.XPath("//table[@id='report-summary-table']/tr/td[1]")).ToList();
+        public static List<IWebElement> Th_ReportGrid_Columns => driver.FindElements(By.CssSelector("table#report thead tr th")).ToList();
+        public static IWebElement Label_SearchFilter_ReportResult => driver.FindElement(By.XPath("//div[@id='report_filter']/label"));
+        public static IWebElement Input_Searchbox_ReportResult => driver.FindElement(By.XPath("//input[@type='search']"));
+        public static IWebElement H2_ResultPage_AllOrg => driver.FindElement(By.CssSelector("h2.display-inline-block.margin-bottom-10px"));
+        public static IWebElement H3_ResultPage_AllOrg => driver.FindElement(By.CssSelector("h3.margin-bottom-10px"));
+        public static List<IWebElement> Th_ReportGrid_Columns_AllOrg => driver.FindElements(By.CssSelector("table#reportAll thead tr th")).ToList();
+
+        string label = string.Empty;
+
+        List<string> temp_List;
+
+        LoginPage login = new LoginPage();
+
+        public void VerifyReportsUI()
+        {
+            ClickOn(Link_ReportsTab);
+            if (IsElementDisplayedNEnabled(H2_Report_Header) && IsElementDisplayedNEnabled(Span_ReportType_Label) && IsElementDisplayedNEnabled(Select_ReportType))
+            {
+                Highlight(H2_Report_Header);
+                Highlight(Span_ReportType_Label);
+                Highlight(Select_ReportType);
+                ExtentReportUtil.report.Log(Status.Pass, "Element displayed & enabled");
+            }
+            else
+            {
+                ExtentReportUtil.report.Log(Status.Fail, "Element Not displayed/enabled");
+            }
+
+        }
+
+        public void VerifyReportInputs(string btnLabel, List<string> expRanges)
+        {
+            List<string> Act_Range = new List<string>();
+            string btnText;//= string.Empty;
+            string label;
+            try
+            {
+                ClickOn(Link_ReportsTab);
+                SelectFromDropDown(SelectionType.selectByValue, Select_ReportType, "Org_Usage");
+
+                if (IsElementDisplayedNEnabled(Span_Org_Label) &&
+                    IsElementDisplayedNEnabled(Span_Date_Label) &&
+                    IsElementDisplayedNEnabled(Button_Generate_Report) &&
+                    IsElementDisplayedNEnabled(Div_Date_Range_box))
+                {
+                    Wait(3);
+                    btnText = GetLabelText(Button_Generate_Report);
+                    AssertTrue(btnText.Equals(btnLabel));
+                    ClickOn(Div_Date_Range_box);
+                    foreach (IWebElement w in Li_Date_Ranges)
+                    {
+                        label = w.GetAttribute("innerText");
+                        Act_Range.Add(label);
+                    }
+                    var diff = expRanges.Except(Act_Range);
+                    if (diff.Count() == 0)
+                    {
+                        ExtentReportUtil.report.Log(Status.Pass, "Elements displayed & enabled and are as expected");
+                    }
+                    else
+                    {
+                        ExtentReportUtil.report.Log(Status.Fail, "Elements are not as expected");
+                    }
+                }
+                else
+                {
+                    ExtentReportUtil.report.Log(Status.Fail, "Element Not displayed/enabled");
+                }
+            }
+            catch (Exception ex) {
+                ExtentReportUtil.report.Log(Status.Debug, "Exception Occured" + ex.ToString());
+            }
+        }
+
+
+        public void VerifyUserSpecificElements(string user, string orgValue)
+        {
+            if (user.Contains("super"))
+            {
+                IsElementDisplayedNEnabled(Select_Value_Org_superuser);
+            }
+            else
+            {
+                string org = GetLabelText(Label_Value_Org_admin);
+                AssertTrue(org.Equals(orgValue));
+            }
+
+        }
+
+
+        public void VerifyGeneratedReportSingleOrg(string org, string title, List<string> fieldList, List<string> columnlist)
+        {
+            List<string> UIFieldList = new List<string>();
+
+            try
+            {
+                //Generate report for single org with superuser
+                ClickOn(Link_ReportsTab);
+                SelectFromDropDown(SelectionType.selectByValue, Select_ReportType, "Org_Usage");
+                SelectFromDropDown(SelectionType.selectByText, Select_Org, org);
+                ClickOn(Div_Date_Range_box);
+                ClickOn(Li_DateRange_Today);
+                ClickOn(Button_Generate_Report);
+                //verify header
+                if (IsElementDisplayedNEnabled(H2_ReportResull_Title))
+                {
+                    string PageTitle = GetLabelText(H2_ReportResull_Title);
+                    if (PageTitle.StartsWith(title) && PageTitle.Contains(org))
+                    {
+                        ExtentReportUtil.report.Log(Status.Pass, "Header displayed & contains selected organization");
+                    }
+                    else
+                    {
+                        ExtentReportUtil.report.Log(Status.Fail, "Header is incorrect");
+                    }
+                }
+                else
+                {
+                    ExtentReportUtil.report.Log(Status.Fail, "Header is missing");
+                }
+
+                //Verify back to report button, Date box(Disabled) , Download: PDF & Excel Buttons
+
+                VerifyReportResultPage();
+
+                //temp list for below loops
+                temp_List = new List<String>();
+
+                //Verify Summary Section
+
+                foreach (IWebElement w in Td_SummaryFieldLabels)
+                {
+                    label = w.GetAttribute("innerText");
+                    temp_List.Add(label);
+
+                }
+
+                var difference1 = temp_List.Except(fieldList);
+                if (difference1.Count() == 0)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Fields are present as expected");
+                }
+                else
+                {
+                    ExtentReportUtil.report.Log(Status.Fail, "Fields are missing");
+                }
+                temp_List.Clear();
+
+                //Verify Session Details & search Box
+                IsElementDisplayedNEnabled(H3_SummaryTableHeader);
+                string Searchlabel = GetLabelText(Label_SearchFilter_ReportResult);
+                if (Searchlabel.Equals("Search:") && IsElementDisplayedNEnabled(Input_Searchbox_ReportResult))
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Search Element label/Input box available");
+                }
+                else
+                {
+                    ExtentReportUtil.report.Log(Status.Fail, "Search Element label/Input box missing");
+                }
+                foreach (IWebElement w in Th_ReportGrid_Columns)
+                {
+                    label = w.GetAttribute("innerText");
+                    temp_List.Add(label);
+                }
+                var difference2 = temp_List.Except(columnlist);
+                if (difference2.Count() == 0)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Columns are present as expected");
+                }
+                else
+                {
+                    ExtentReportUtil.report.Log(Status.Fail, "Columns are missing");
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log( Status.Debug,"Exception Occured"+ex.ToString());
+            }
+
+
+        }
+
+        //Verify back to report button, Date box(Disabled) , Download: PDF & Excel Buttons
+        public void VerifyReportResultPage()
+        {
+            if (IsElementDisplayedNEnabled(Button_BackToReport) &&
+               IsElementDisplayedNEnabled(Div_ReportDateRange_ResultPage) &&
+               IsElementDisplayedNEnabled(H4_DownloadLabel_ResultPage) &&
+               IsElementDisplayedNEnabled(Button_DownloadPDF) &&
+               IsElementDisplayedNEnabled(Button_DownloadExcel))
+            {
+                ExtentReportUtil.report.Log(Status.Pass, "All Elements are disaplayed right");
+            }
+            else
+            {
+                ExtentReportUtil.report.Log(Status.Fail, "Element(s) is/are not visible/enabled");
+            }
+        }
+
+        public void VerifyGeneratedReportAllOrg(List<string> columnList, string header1, string header2)
+        {
+            temp_List = new List<String>();
+            try
+            {
+                ClickOn(Link_ReportsTab);
+                SelectFromDropDown(SelectionType.selectByValue, Select_ReportType, "Org_Usage");
+                ClickOn(Div_Date_Range_box);
+                ClickOn(Li_DateRange_Today);
+                ClickOn(Button_Generate_Report);
+                VerifyReportResultPage();
+                string h2 = GetLabelText(H2_ResultPage_AllOrg);
+                string h3 = GetLabelText(H3_ResultPage_AllOrg);
+                if (h2.Equals(header1) && h3.Equals(header2))
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Both header are disaplayed right");
+                }
+                else
+                {
+                    ExtentReportUtil.report.Log(Status.Fail, "Both or one header is missing");
+                }
+
+
+                foreach (IWebElement w in Th_ReportGrid_Columns_AllOrg)
+                {
+                    label = w.GetAttribute("innerText");
+                    temp_List.Add(label);
+                }
+
+                var diff = temp_List.Except(columnList);
+                if (diff.Count() == 0)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Columns are present as Expected");
+                }
+                else
+                {
+                    ExtentReportUtil.report.Log(Status.Fail, "Columns are missing");
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Debug, "Exception Occured" + ex.ToString());
+            }
+
+
+        }
+        public void Download_PDFExcel_SingleReport_Admin(string org, string pdf, string excel)
+        {
+            try
+            {
+                ClickOn(Link_ReportsTab);
+                SelectFromDropDown(SelectionType.selectByValue, Select_ReportType, "Org_Usage");
+                string valOrg = GetLabelText(Label_Value_Org_admin);
+                if (valOrg.Equals(org))
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Single organization is selected");
+                }
+                else
+                {
+                    ExtentReportUtil.report.Log(Status.Fail, "Default organization is not selected");
+                }
+                ClickOn(Button_Generate_Report);
+                DownloadAndVerifyFiles(pdf, excel);
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Debug, "Exception Occured" + ex.ToString());
+            }
+
+        }
+
+        public void DownloadAndVerifyFiles(string pdf, string excel)
+        {
+            ClickOnJS(Button_DownloadPDF);
+            Wait(1);
+            ClickOnJS(Button_DownloadExcel);
+            Wait(5);
+            string pdfFile = "C:\\Users\\" + ActivitiesPage.sysUsername + "\\Downloads\\" + pdf;
+            if (File.Exists(pdfFile))
+            {
+                ExtentReportUtil.report.Log(Status.Pass, "PDF downloaded to local");
+            }
+            else
+            {
+                ExtentReportUtil.report.Log(Status.Fail, "PDF not found");
+            }
+            string excelFile = "C:\\Users\\" + ActivitiesPage.sysUsername + "\\Downloads\\" + excel;
+            if (File.Exists(excelFile))
+            {
+                ExtentReportUtil.report.Log(Status.Pass, "Excel downloaded to local");
+            }
+            else
+            {
+                ExtentReportUtil.report.Log(Status.Fail, "Excel not found");
+            }
+        }
+
+        public void Download_PDFExcel_AllOrg_SuperUser(string pdf, string excel)
+        {
+            ClickOn(Link_ReportsTab);
+            SelectFromDropDown(SelectionType.selectByValue, Select_ReportType, "Org_Usage");
+            Wait(2);
+            ClickOn(Button_Generate_Report);
+            Wait(5);
+            DownloadAndVerifyFiles(pdf, excel);
+        }
+    }
+}
+

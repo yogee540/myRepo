@@ -1,0 +1,427 @@
+﻿using AventStack.ExtentReports;
+using OpenQA.Selenium;
+using SeleniumFramework.UIOperations;
+using SeleniumFramework.Utilities.common;
+using SeleniumFramework.Utilities.reportUtil;
+using System;
+using SeleniumFramework.BusinessFunctions;
+using NUnit.Framework;
+using OpenQA.Selenium.Support.UI;
+
+namespace SeleniumFramework.Pages
+{
+    public class UsersPage : UIActions
+    {
+        CommonFeatures commonFeatures = new CommonFeatures();
+        Common commonPage = new Common();
+        LoginPage log_page = new LoginPage();
+        ActivitiesPage activitiesPage = new ActivitiesPage();
+
+        //Add User Objects
+        IWebElement Txt_Password => driver.FindElement(By.CssSelector("#pass"));
+        IWebElement Txt_ConfirmPassword => driver.FindElement(By.CssSelector("#confirmPassword"));
+        public static IWebElement Tab_Users => driver.FindElement(By.CssSelector("#users-tab"));
+        public static IWebElement Warning_Msg => driver.FindElement(By.XPath("//*[contains(text(),'The Support Operator role can only be created as a standalone role.')]"));        //Support Operator is standalone role.It cannot exist in combination with any other role
+        public static IWebElement NewUser_Username => driver.FindElement(By.XPath("//label[text()='Username']/following-sibling::input"));
+        public static IWebElement NewUser_Password => driver.FindElement(By.XPath("//label[text()='Password']/following-sibling::input"));
+        public static IWebElement NewUser_ConfirmPassword => driver.FindElement(By.XPath("//label[text()='Confirm Password']/following-sibling::input"));
+        public static IWebElement NewUser_FirstName => driver.FindElement(By.XPath("//label[text()='First Name']/following-sibling::input"));
+        public static IWebElement NewUser_Surname => driver.FindElement(By.XPath("//label[text()='Surname']/following-sibling::input"));
+        public static IWebElement NewUser_Email => driver.FindElement(By.XPath("//label[text()='Email']/following-sibling::input"));
+        public static IWebElement Btn_AddUser => driver.FindElement(By.XPath("//button[@id='add-user-button']"));
+        public static IWebElement CheckMediaDownload_Yes => driver.FindElement(By.XPath("//span[@class='x-toggle-container large x-toggle-container-checked']/div[@id='visual-media-download']"));
+        public static IWebElement CheckMediaDownload_No => driver.FindElement(By.XPath("//span[@class='x-toggle-container large']/div[@id='visual-media-download']"));
+        public static IWebElement MediaDownload => driver.FindElement(By.XPath("//div[@id='visual-media-download']"));
+        public static IWebElement Roles_Checkbox => driver.FindElement(By.XPath("//div[@class='checkbox']"));
+        public static IWebElement Btn_Save => driver.FindElement(By.XPath("//button[text()='Save']"));
+        public static IWebElement Btn_Cancel => driver.FindElement(By.XPath("//a[@id='cancel']"));
+        public static IWebElement Edit_Link => driver.FindElement(By.XPath("//*[text()='Edit']"));
+        public static IWebElement txt_Search => driver.FindElement(By.CssSelector(".form-control.input-sm"));
+        public static IWebElement Input_Userbox => driver.FindElement(By.CssSelector("#user"));
+        public static IWebElement Link_Activity => driver.FindElement(By.XPath("//a[text()='Activity']"));
+        public static IWebElement Div_Status => driver.FindElement(By.XPath("//div[@id='visual-status']"));
+        public static IWebElement Status_Active => driver.FindElement(By.XPath("//span[@class='x-toggle-container large x-toggle-container-checked']/div[@id='visual-status']"));
+        public static IWebElement Status_Locked => driver.FindElement(By.XPath("//span[@class='x-toggle-container large']/div[@id='visual-status']"));
+
+        IWebElement Txt_CurrentPassword => driver.FindElement(By.CssSelector("#old-password-input"));
+        IWebElement Txt_NewPassword => driver.FindElement(By.CssSelector("#new-password-input"));
+        IWebElement Txt_ConfirmNewPassword => driver.FindElement(By.CssSelector("#confirm-password-input"));
+        //No Records found
+        public static IWebElement NoRecordsFound => driver.FindElement(By.XPath("//td[text()='No matching records found']"));
+        IWebElement Msg_UpdatedSuccessfully => driver.FindElement(By.XPath("//*[contains(text(),'updated successfully')]"));
+        IWebElement Msg_UpdateFailed => driver.FindElement(By.XPath("//*[contains(text(),'This username is already in use')]"));
+        IWebElement Msg_PasswordChangeFailed => driver.FindElement(By.XPath("//*[contains(text(),'Your current password did not match. Please try again.')]"));
+        IWebElement Msg_PasswordChangeFailedWithPrevVal => driver.FindElement(By.XPath("//*[contains(text(),'Your new password must be different from your previous 1 passwords. Please try again.')]"));
+        IWebElement Btn_ChangePassword => driver.FindElement(By.CssSelector(".change-password-button>button"));
+
+        By Heading_Users = By.XPath("//h2[contains(text(),'Users')]");
+        By SupportOp_Standalone_ErrorMsg = By.XPath("//p[text()='The Support Operator role can only be created as a standalone role.']");
+
+        IWebElement lbl_DataTime => driver.FindElement(By.XPath("//*[@aria-label='Date/Time: activate to sort column ascending']"));
+
+        IWebElement Select_UserType => driver.FindElement(By.CssSelector("select[name='organizations']"));
+
+        public UsersPage ClickUsersTab()
+        {
+            commonFeatures.ClickTab("Users");
+            VerifyUsersPageLoaded();
+            return new UsersPage();
+        }
+
+        public bool VerifyUsersPageLoaded()
+        {
+            return VerifyPageLoaded(Heading_Users, "User Page");
+        }
+
+        public UsersPage AddSupervisotAndOperatorUser(string Password, string Email)
+        {
+            string timeStamp = commonPage.GetTimeStamp();
+            Username = "user_" + timeStamp;
+
+            ClickUsersTab();
+            ClickOn(Btn_AddUser);
+            if(!GlobalVariables.URL.Contains("auto"))
+            {
+                SelectUserType();
+            }
+            EnterText(NewUser_Username, Username);
+            EnterText(NewUser_Password, Password);
+            EnterText(NewUser_ConfirmPassword, Password);
+            EnterText(NewUser_FirstName, Username);
+            EnterText(NewUser_Surname, timeStamp);
+            EnterText(NewUser_Email, Email);
+            Wait(2);
+            SelectRoleByIndex("1");
+            SelectRoleByIndex("2");
+            SelectRoleByIndex("3");
+            Wait(1);
+            ClickOn(Btn_Save);
+            Wait(5);
+            VerifyUserInTheUserList("RecordPresent");
+            return new UsersPage();
+        }
+
+        public UsersPage AddSupportOperatorUser(string Password, string Email, string Index)
+        {
+            string timeStamp = commonPage.GetTimeStamp();
+            Username = "user_" + timeStamp;
+
+            ClickUsersTab();
+            ClickOn(Btn_AddUser);
+            SelectUserType();
+            EnterText(NewUser_Username, Username);
+            EnterText(NewUser_Password, Password);
+            EnterText(NewUser_ConfirmPassword, Password);
+            EnterText(NewUser_FirstName, Username);
+            EnterText(NewUser_Surname, timeStamp);
+            EnterText(NewUser_Email, Email);
+            Wait(2);
+            SelectRoleByIndex(Index);//4
+            Wait(1);
+            ClickOn(Btn_Save);
+            Wait(5);
+            VerifyUserInTheUserList("RecordPresent");
+
+            return new UsersPage();
+        }
+
+        public void CreateUser_SupportOperator(String Lnk_Edit, String Index)
+        {
+            ClickOn(Tab_Users);
+            ClickOn(txt_Search);
+            EnterText(txt_Search, Username);
+            Click_EventByData_N_Index(Lnk_Edit);
+            SelectRoleByIndex(Index); //5
+            Wait(1);
+            IsElementDisplayedNEnabled(Warning_Msg);
+            ClickOn(Btn_Cancel);
+            driver.SwitchTo().Alert().Accept();
+            Wait(1);
+            driver.SwitchTo().Alert().Accept();
+            Wait(1);
+            log_page.LogOffFromApplication();
+
+        }
+
+        public UsersPage VerifyUserInTheUserList(string VerifyRecord)
+        {
+            string UserNameInTable = "//table[@id='userTable']//td[@title='" + Username + "']";
+            commonFeatures.Search(Username);
+            try
+            {
+                switch (VerifyRecord)
+                {
+                    case "NoRecords":
+                        if (NoRecordsFound.Displayed)
+                        {
+                            ExtentReportUtil.report.Log(Status.Pass, "No Records found for -- " + Username);
+                        }
+                        break;
+
+                    case "RecordPresent":
+                        if (driver.FindElement(By.XPath(UserNameInTable)).Displayed)
+                        {
+                            ExtentReportUtil.report.Log(Status.Pass, "Searched -- <b>" + Username + "</b> is displayed in the User Table");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Fail, "Exception occurred in VerifyUserInTheUserList() method -- " + ex.ToString());
+            }
+
+            return new UsersPage();
+        }
+
+        public UsersPage SelectRoleByIndex(string Index)
+        {
+            string Role = "(//div[@class='checkbox'])[" + Index + "]";
+            ClickOn(driver.FindElement(By.XPath(Role)));
+            return new UsersPage();
+        }
+
+        public UsersPage VerifySupportOpIsStandalone()
+        {
+            commonFeatures.ClickEdit();
+            SelectRoleByIndex("5");
+            IsElementDisplayed(SupportOp_Standalone_ErrorMsg);
+            ClickOn(Btn_Cancel);
+            driver.SwitchTo().Alert().Accept();
+            Wait(1);
+            driver.SwitchTo().Alert().Accept();
+            return new UsersPage();
+        }
+
+        public UsersPage VerifyUserInTheUserList_ByName(string UserToVerify, string VerifyRecord)
+        {
+            string UserNameInTable = "//table[@id='userTable']//td[@title='" + UserToVerify + "']";
+            commonFeatures.Search(UserToVerify);
+            try
+            {
+                switch (VerifyRecord)
+                {
+                    case "NoRecords":
+                        if (NoRecordsFound.Displayed)
+                        {
+                            ExtentReportUtil.report.Log(Status.Pass, "No Records found for -- " + Username);
+                        }
+                        break;
+
+                    case "RecordPresent":
+                        if (driver.FindElement(By.XPath(UserNameInTable)).Displayed)
+                        {
+                            ExtentReportUtil.report.Log(Status.Pass, "Searched -- <b>" + Username + "</b> is displayed in the User Table");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Fail, "Exception occurred in VerifyUserInTheUserList() method -- " + ex.ToString());
+            }
+
+            return new UsersPage();
+        }
+
+        public void EditUsername(string UpdatedUsername)
+        {
+            commonFeatures.ClickEdit();
+            ClearText(Input_Userbox);
+            EnterText(Input_Userbox, UpdatedUsername);
+            ClickOn(Btn_Save);
+        }
+
+        public void CreatedUserSearch_AdminUser()
+        {
+            ClickOn(Tab_Users);
+            Wait(5);
+            //ClickOn(txt_Search);
+            EnterText(txt_Search, Username);
+            CheckIfElementIsAbsent(Edit_Link);
+            log_page.LogOffFromApplication();
+        }
+
+        public void VerifyUserCreatedInActivity()
+        {
+            By UserCreated_XPath = By.XPath("//td[text()='User created: [" + Username + "]']");
+            try
+            {
+                ClickOn(Link_Activity);
+                activitiesPage.SortActivityTableWithDateDesc();
+                if (driver.FindElement(UserCreated_XPath).Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "User created and displayed in activity -- " + Username);
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public void VerifyLoginFailed_AccountExpired()
+        {
+            By UserAccountExpired = By.XPath("//td[text()='User login failed: account expired']");
+            try
+            {
+                ClickOn(Link_Activity);
+                activitiesPage.SortActivityTableWithDateDesc();
+                if (driver.FindElement(UserAccountExpired).Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "User account expired");
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public void ChangeUserPassword(string username, string newPass)
+        {
+            try
+            {
+                ClickUsersTab();
+                Wait(2);
+                ClickOn(txt_Search);
+                EnterText(txt_Search, username);
+                ClickOn(Edit_Link);
+                EnterText(Txt_Password, newPass);
+                EnterText(Txt_ConfirmPassword, newPass);
+                Wait(2);
+                ClickOn(Btn_Save);
+                Wait(1);
+                //CheckIfElementIsPresent(Msg_UpdatedSuccessfully);
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public void VerifyUserUpdatedInActivity(string UpdatedUserName)
+        {
+            By UserCreated_XPath = By.XPath("//td[text()='User updated: [" + UpdatedUserName + "]']");
+            try
+            {
+                ClickOn(Link_Activity);
+                activitiesPage.SortActivityTableWithDateDesc();
+                if (driver.FindElement(UserCreated_XPath).Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "User created and displayed in activity -- " + UpdatedUserName);
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public void VerifyDuplicateUserName(string username, string newUserName)
+        {
+            try
+            {
+                ClickUsersTab();
+                ClickOn(txt_Search);
+                EnterText(txt_Search, username);
+                ClickOn(Edit_Link);
+                EnterText(Input_Userbox, newUserName);
+                ClickOn(Btn_Save);
+                Wait(1);
+                CheckIfElementIsPresent(Msg_UpdateFailed);
+                ClickOn(Btn_Cancel);
+                driver.SwitchTo().Alert().Accept();
+
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public UsersPage VerifyStatus(string EditedUser, string VerifyStatus)
+        {
+
+            ClickOn(Div_Status);
+            ClickOn(Btn_Save);
+            Wait(5);
+            commonFeatures.Search(EditedUser);
+            commonFeatures.ClickEdit();
+            try
+            {
+                switch (VerifyStatus.ToUpper())
+                {
+                    case "ACTIVE":
+                        if (Status_Active.Displayed)
+                        {
+                            ExtentReportUtil.report.Log(Status.Pass, "User Account is Active");
+                        }
+                        else
+                        {
+                            ExtentReportUtil.report.Log(Status.Fail, "User Account is Locked");
+                        }
+                        break;
+
+                    case "LOCKED":
+                        if (Status_Locked.Displayed)
+                        {
+                            ExtentReportUtil.report.Log(Status.Pass, "User Account is Locked");
+                        }
+                        else
+                        {
+                            ExtentReportUtil.report.Log(Status.Fail, "User Account is Active");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                ClickOn(Btn_Cancel);
+                Wait(5);
+                IAlert alert = driver.SwitchTo().Alert();
+                alert.Accept();
+                Wait(2);
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Fail, "Exception occurred in VerifyStatus() method -- " + ex.ToString());
+            }
+            return new UsersPage();
+        }
+
+        public void VerifyLogForDeletedOrganisation(string username, string organisationName)
+        {
+            try
+            {
+                if (!txt_Search.GetAttribute("value").Equals(username))
+                {
+                    ClearText(txt_Search);
+                    Set_Textbox(txt_Search, username);
+                    Wait(2);
+                }
+                IWebElement lnk_Activity = driver.FindElement(By.XPath("//td[contains(text(),'" + username + "')]/../td/a[text()='Activity']"));
+                ClickOn(lnk_Activity);
+                Wait(2);
+                WaitForObject(lbl_DataTime);
+                ClickOn(lbl_DataTime);
+                Wait(2);
+                Assert.True(driver.FindElement(By.XPath("//tr/td[3]")).Text.Contains("Organisation deleted: [" + organisationName + "]"), "Log is not recorded for deleted organisation.");
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occured: " + ex.ToString());
+            }
+        }
+
+        public void SelectUserType()
+        {
+            SelectElement usertype = new SelectElement(Select_UserType);
+            usertype.SelectByText("Organisation Users");
+        }
+    }
+}
+

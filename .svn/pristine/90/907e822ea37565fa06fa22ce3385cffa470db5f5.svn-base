@@ -1,0 +1,305 @@
+﻿using NUnit.Framework;
+using SeleniumFramework.Utilities.hooks;
+using SeleniumFramework.BusinessFunctions;
+using SeleniumFramework.Pages;
+using System.Collections.Generic;
+
+namespace SeleniumFramework.Tests.APITests
+{
+    class APITests : TestListners
+    {
+        
+        APICheck api = new APICheck();
+        private static string Scheme = GlobalVariables.Scheme;
+        private static string AuthKey = GlobalVariables.AuthKey;
+        private static string SessionId = GlobalVariables.SessionId;
+        private static string Scheme2 = GlobalVariables.Scheme1;
+        private static string AuthKey2 = GlobalVariables.AuthKey1;
+
+        [Test, Description("136436:API-Authenticate User- Request and Response with Valid user")]
+        [Category("Data Dependent")]
+        public void TC_136436_LoginAPI()
+        {
+         
+            api.LoginAPI(Scheme, AuthKey);
+        }
+
+        [Test, Description("136437:API-Authenticate User- Request and Response with Invalid user")]
+        [Category("Data Dependent")]
+        public void TC_136437_LoginAPI()
+        {
+            api.LoginAPI_Invalid(Scheme, AuthKey);
+        }
+
+        [Test, Description("136436:API-User login- Intrgration API Request and Response with Valid user")]
+        [Category("Data Dependent")]
+        public void TC_136436_IntegrationPostLoginAPI()
+        {
+            string Scheme1 = testData.ReadData("APITests", "scheme");
+            string AuthKey1 = testData.ReadData("APITests", "authkey");
+            api.PostLoginAPI(Scheme1, AuthKey1);
+        }
+
+
+        [Test, Description("136482: CreateSession API verification")]
+        [Category("Data Dependent")]
+        public void TC_136482_CreateSessionAPI()
+        {
+            api.CreateSessionAPI(Scheme,AuthKey);
+        }
+
+        [Test, Description("136485: CreateSession API verification: Bad Request")]
+        [Category("Data Dependent")]
+        public void TC_136485_CreateSessionAPI()
+        {
+            api.CreateSessionAPI_BadRequest(Scheme, AuthKey);
+        }
+
+        [Test, Description("136488: CreateSession API verification: Invalid Token")]
+        [Category("Data Dependent")]
+        public void TC_136488_CreateSessionAPI()
+        {
+           // string Scheme = testData.ReadData("APITests", "scheme");
+           // string AuthKey = testData.ReadData("APITests", "authkey");
+            api.CreateSessionAPI_Unauthorized(Scheme, AuthKey);
+        }
+        
+        [Test, Description("136499:RetriveSession API verification")]
+        [Category("Data Dependent")]
+        public void TC_136499_RetriveSessionAPI()
+        {
+            //string Scheme = testData.ReadData("APITests", "scheme");
+            //string AuthKey = testData.ReadData("APITests", "authkey");
+            //string SessionId = testData.ReadData("APITests", "sessionid");
+            api.RetriveSessionAPI(Scheme, AuthKey,SessionId);
+        }
+
+        [Test, Description("136623:API RetriveMediaItemInfo verification")]
+        [Category("Data Dependent")]
+        public void TC_136623_RetriveMediaItemInfoAPI()
+        {
+           // string Scheme = testData.ReadData("APITests", "scheme");
+           // string AuthKey = testData.ReadData("APITests", "authkey");
+            //string SessionId = testData.ReadData("APITests", "sessionid");
+            api.RetriveMediaItemInfo(Scheme, AuthKey, SessionId);
+        }
+
+        [Test, Description("136623:MediaDownload API verification")]
+        [Category("Data Dependent")]
+        public void TC_136623_MediaDownload()
+        {
+            //string Scheme = testData.ReadData("APITests", "scheme");
+            //string AuthKey = testData.ReadData("APITests", "authkey");
+            //string SessionId = testData.ReadData("APITests", "sessionid");
+            api.MediaDownload(Scheme, AuthKey, SessionId);
+        }
+
+        [Test, Description("GetSessionByTimeStamp API verification")]
+        [Category("Data Dependent")]
+        public void TC_136620_GetSessionByTimeStampAPI()
+        {
+           api.GetSessionByTimeStamp(Scheme, AuthKey, SessionId);
+        }
+
+        [Test, Description("136619:DownloadAuditPDF API verification")]
+        [Category("Data Dependent")]
+        public void TC_136619_DownloadAuditPDFAPI()
+        {
+            api.DownloadAuditPDF(Scheme, AuthKey, SessionId);
+        }
+
+        [Test, Description("ReportLogActivity API verification")]
+        [Category("Data Dependent")]
+        public void TC_136624_ReportLogActivityAPI()
+        {
+          
+            api.ReportLogActivity(Scheme, AuthKey);
+        }
+
+        [Test, Description("GetOrganisations API verification")]
+        [Category("Data Dependent")]
+        public void TC_136620_GetOrganisationsAPI()
+        {
+            api.GetOrganisations(Scheme, AuthKey);
+        }
+
+
+        [Test, Description("GetOrganisationConfigById API verification")]
+        [Category("Data Dependent")]
+        public void TC_136620_GetOrganisationConfigByIdAPI()
+        {
+            api.GetOrganisationConfigById(Scheme, AuthKey);
+        }
+
+
+        [Test, Description("GetVersionConfig API verification")]
+        [Category("Data Dependent")]
+        public void TC_136620_GetVersionConfigAPI()
+        {
+            api.VersionConfigAPI(Scheme, AuthKey);
+        }
+
+
+        [Test, Description("GetOrganisationByType API verification")]
+        [Category("Data Dependent")]
+        public void TC_136620_GetOrganisationByTypeAPI()
+        {
+            api.GetOrganisationByType(Scheme, AuthKey);
+        }
+
+        [Test, Description("GetOrganisationsTypes API verification")]
+        [Category("Data Dependent")]
+        public void TC_136620_GetOrganisationsTypesAPI()
+        {
+            api.GetOrganisationsTypes(Scheme, AuthKey);
+        }
+
+        [Test, Description("GetOrganisationProperties API verification")]
+        [Category("Data Dependent")]
+        public void TC_136620_GetOrganisationPropertiesAPI()
+        {
+            api.GetOrganisationProperties(Scheme, AuthKey);
+        }
+
+        //[Test, Description("DeleteOrganisation API verification")]
+        //[Category("Data Dependent")]
+        //[Ignore("APITest")]
+        //public void TC_136620_DeleteOrganisationAPI()
+        //{
+        //   // string Scheme = testData.ReadData("APITests", "scheme");
+        //   // string AuthKey = testData.ReadData("APITests", "authkey");
+        //    api.DeleteOrganisation(Scheme, AuthKey);
+        //}
+
+
+        //[Test, Description("PostOrganisation API verification")]
+        //[Category("Data Dependent")]
+        //[Ignore("APITest")]
+        //public void TC_136620_PostOrganisationAPI()
+        //{
+        //  //  string Scheme = testData.ReadData("APITests", "scheme");
+        //  //  string AuthKey = testData.ReadData("APITests", "authkey");
+        //    api.PostOrganisationByType(Scheme, AuthKey);
+        //}
+
+        [Test, Description("GetOrganisationConfiguration API verification")]
+        [Category("Data Dependent")]
+        public void TC_136620_GetOrganisationConfigurationAPI()
+        {
+            api.GetOrganisationConfiguration(Scheme, AuthKey);
+        }
+
+
+        [Test, Description("136502:EndSession API verification")]
+        [Category("Data Dependent")]
+        public void TC_136502_EndSessionAPI()
+        {
+            api.EndSession(Scheme, AuthKey);
+        }
+
+
+        [Test, Description("136623: API GetSessionMediaCountById verification")]
+        [Category("Data Dependent")]
+        public void TC_136623_GetSessionMediaCountByIdAPI()
+        {
+            api.GetSessionMediaCountById(Scheme, AuthKey, SessionId);
+        }
+
+        [Test, Description("136624: API GetUsersByOrgId verification")]
+        [Category("Data Dependent")]
+        public void TC_136624_GetUsersByOrgIdAPI()
+        {
+           // string Scheme = testData.ReadData("APITests", "scheme");
+           // string AuthKey = testData.ReadData("APITests", "authkey");
+            api.GetUsersByOrgId(Scheme, AuthKey);
+        }
+
+
+        [Test, Description("136624: API EndSessionAPI verification")]
+        [Category("Data Dependent")]
+        public void TC_136624_GetUsersAPI()
+        {
+            api.LoginUserSuccess(Scheme, AuthKey);
+        }
+
+        [Test, Description("136624:LoginUserSuccess API verification")]
+        [Category("Data Dependent")]
+        public void TC_136624_LoginUserSuccessAPI()
+        {
+            api.LoginUserSuccess(Scheme, AuthKey);
+        }
+
+        [Test, Description("136624: API GetUserById verification")]
+        [Category("Data Dependent")]
+        public void TC_136624_GetUsersByIdAPI()
+        {
+            api.GetUserById(Scheme, AuthKey);
+        }
+
+        //[Test, Description("136624:UpdatePassword API verification:Forbidden Expected")]
+        //[Category("Data Dependent")]
+        //[Ignore("Payload in RSA")]
+        //public void TC_136624_UpdatePasswordAPI()
+        //{
+        //    string Scheme1 = testData.ReadData("APITests", "scheme");
+        //    string AuthKey1 = testData.ReadData("APITests", "authkey");
+        //    api.UpdatePassword(Scheme1, AuthKey1,Scheme,AuthKey);
+        //}
+
+        [Test, Description("136621: API SendSMS verification")]
+        [Category("Data Dependent")]
+        public void TC_136621_SendSMSAPI()
+        {
+            api.SendSMS(Scheme, AuthKey);
+        }
+
+        [Test, Description("136624: API SendMessage verification")]
+        [Category("Data Dependent")]
+        public void TC_136621_SendMessageAPI()
+        {
+            api.SendMessage(Scheme, AuthKey);
+        }
+
+        [Test, Description("136622: API GetReportDataByOrganizationId_TimeRange verification")]
+        [Category("Data Dependent")]
+        public void TC_136622_GetReportDataByOrganizationId_TimeRangeAPI()
+        {
+
+        //    string Scheme = testData.ReadData("APITests", "scheme");
+        //    string AuthKey = testData.ReadData("APITests", "authkey");
+        //    string SessionId = testData.ReadData("APITests", "sessionid");
+            api.GetReportDataByOrganizationId_TimeRange(Scheme, AuthKey, SessionId);
+        }
+
+        //[Test, Description("136622: API GetReportDataByOrganizations_TimeRange verification")]
+        //[Category("Data Dependent")]
+        ////[Ignore("APITest")]
+        //public void TC_136622_GetReportDataByOrganizations_TimeRangeAPI()
+        //{
+
+        ////    string Scheme = testData.ReadData("APITests", "scheme");
+        ////    string AuthKey = testData.ReadData("APITests", "authkey");
+        //    api.GetReportDataByOrganizations_TimeRange(Scheme, AuthKey);
+        //}
+
+
+        [Test, Description("136621: API SendEmail verification")]
+        [Category("Data Dependent")]
+        public void TC_136621_SendEmailAPI()
+        {
+        //    string Scheme = testData.ReadData("APITests", "scheme");
+        //    string AuthKey = testData.ReadData("APITests", "authkey");
+            api.SendEmail(Scheme, AuthKey);
+        }
+
+
+        [Test, Description("136624: API UpdateUser verification")]
+        [Category("Data Dependent")]
+        public void TC_136624_UpdateUserAPI()
+        {
+            string Scheme1 = testData.ReadData("APITests", "scheme");
+            string AuthKey1 = testData.ReadData("APITests", "authkey");
+            api.UpdateUser(Scheme1, AuthKey1, Scheme2, AuthKey2);
+        }
+    }
+}

@@ -1,0 +1,54 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using MailKit.Net.Imap;
+using MailKit.Search;
+using MailKit;
+using MimeKit;
+using System.Text.RegularExpressions;
+using HtmlAgilityPack;
+using System.Linq;
+
+namespace SeleniumFramework.Utilities.common
+{
+    
+    public class MailRepository
+    {
+        public static List<string> nurl;
+        public static void ReadEmail()
+        {
+            nurl = new List<string>();
+            using (var client = new ImapClient())
+            {
+                // accept all SSL certificates
+                client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+
+                client.Connect("imap.gmail.com", 993, true);
+
+                client.Authenticate("testuserbs007@gmail.com", "Password@123");
+
+                // The Inbox folder is always available on all IMAP servers...
+                var inbox = client.Inbox;
+                inbox.Open(FolderAccess.ReadWrite);
+
+                var message = inbox.GetMessage(inbox.Count - 1);
+
+                string emailUrl = message.TextBody;
+                string text = Regex.Replace(emailUrl.ToString(),
+  @"((http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)",
+  "<a target='_blank' href='$1'>$1</a>");
+
+                var regex = new Regex("<a [^>]*href=(?:'(?<href>.*?)')|(?:\"(?<href>.*?)\")", RegexOptions.IgnoreCase);
+                //var urls = regex.Matches(text).OfType<Match>().Select(m => m.Groups["href"].Value).SingleOrDefault();
+
+                var doc = new HtmlDocument();
+                doc.LoadHtml(text);
+                var nodes = doc.DocumentNode.SelectNodes("a[@href]").ToList();
+                string temp = nodes[0].Attributes["href"].Value;
+                nurl.Add(temp);
+                int count = nurl.Count();
+                client.Disconnect(true);
+            }
+        }
+    }
+}

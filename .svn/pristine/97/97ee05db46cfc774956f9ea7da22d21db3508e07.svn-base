@@ -1,0 +1,209 @@
+﻿using NUnit.Framework;
+using SeleniumFramework.Utilities.hooks;
+using SeleniumFramework.BusinessFunctions;
+using SeleniumFramework.Pages.Day0;
+using SeleniumFramework.Pages;
+using System.Collections.Generic;
+
+namespace SeleniumFramework.Tests.Day0
+{
+    class LoggingUserActivity : TestListners
+    {
+        LoginPage loginPage = new LoginPage();
+        OrganisationPage organisationPage = new OrganisationPage();
+        CommonFeatures commonFeatures = new CommonFeatures();
+        ActivitiesPage activitiesPage = new ActivitiesPage();
+        LoggingActivity logging = new LoggingActivity();
+        UsersPage userPage = new UsersPage();
+
+        public string Tab_Users = "Users";
+        
+        [Test, Description("User password updated:User password")]
+        [Category("Data Dependent")]
+        //[Ignore("NewEnvironment")]
+        public void TC_132430_UpdateUserPassword()
+        {
+            string Admin_Username = testData.ReadData("Day0", "Admin_Username");
+            string Admin_Password = testData.ReadData("Day0", "Admin_Password");
+            string user_name = testData.ReadData("Day0", "user_name");
+            string newPass = testData.ReadData("Day0", "newPass");
+
+            loginPage.LoginToApplication(Admin_Username, Admin_Password);
+            userPage.ChangeUserPassword(user_name, newPass);
+            commonFeatures.Search(Admin_Username);
+            activitiesPage.VerifyUserUpdatedInActivity(user_name);
+            loginPage.LogOffFromApplication();
+        }
+
+        [Test, Description("User | Add User Roles -Admin, Operator , Supervisor")]
+        [Category("Data Independent")]
+        //[Ignore("NewEnvironment")]
+        public void TC_132429_AddUserAdminOpSupervisor()
+        {
+            string Admin_Username = testData.ReadData("Day0", "Admin_Username");
+            string Admin_Password = testData.ReadData("Day0", "Admin_Password");
+            string Email = testData.ReadData("Day0", "Email");
+
+            loginPage.LoginToApplication(Admin_Username, Admin_Password);
+            commonFeatures.ClickTab(Tab_Users);
+            userPage.AddSupervisotAndOperatorUser(Admin_Password, Email);
+            commonFeatures.Search(Admin_Username);
+            loginPage.LogOffFromApplication();
+        }
+
+        [Test, Description("Application | Launch&Verify")]
+        [Category("Data Independent")]
+        public void TC_132428_AppLaunchAndVerify()
+        {
+            string Admin_Username = testData.ReadData("Day0", "Admin_Username");
+            string Admin_Password = testData.ReadData("Day0", "Admin_Password");
+            
+
+            loginPage.LoginToApplication(Admin_Username, Admin_Password);
+            loginPage.LogOffFromApplication();
+        }
+
+        [Test, Description("Login | Login to 9eye with different user roles:Multiple user")]
+        [Category("Data Independent")]
+        //[Ignore("NewEnvironment")]
+        public void TC_132431_LoginWithifferentRoles()
+        {
+            List<string> userlist = new List<string>
+            {
+                testData.ReadData("Day0", "adminuser"),
+                testData.ReadData("Day0", "opusername"),
+                testData.ReadData("Day0", "superuser"),
+                testData.ReadData("Day0", "supportop"),
+                testData.ReadData("Day0", "supervisor")
+            };
+
+            string Admin_Password = testData.ReadData("Day0", "password");
+            loginPage.VerifyLoginUsingMultipleUser(userlist , Admin_Password);
+        }
+
+        [Test, Description("Login | User Field Validation")]
+        [Category("Data Independent")]
+        public void TC_135008_CreateUserFieldValidation()
+        {
+            List<string> userInfo = new List<string>
+            {
+                testData.ReadData("Day0", "username"),
+                testData.ReadData("Day0", "password"),
+                testData.ReadData("Day0", "user1"),
+                testData.ReadData("Day0", "password1"),
+                testData.ReadData("Day0", "confirmpassword1"),
+                testData.ReadData("Day0", "name1"),
+                testData.ReadData("Day0", "surname"),
+                testData.ReadData("Day0", "email"),
+                testData.ReadData("Day0", "mediadownload"),
+                testData.ReadData("Day0", "role1")
+            };
+
+            List<string> usererror = new List<string>
+            {
+                testData.ReadData("Day0", "usererror"),
+                testData.ReadData("Day0", "passworderror1"),
+                testData.ReadData("Day0", "passworderror2"),
+                testData.ReadData("Day0", "passworderror3"),
+                testData.ReadData("Day0", "confirmpassworderror"),
+                testData.ReadData("Day0", "firstnameerror"),
+                testData.ReadData("Day0", "surnameerror"),
+                testData.ReadData("Day0", "emailerror"),
+                testData.ReadData("Day0", "userexistserror"),
+                testData.ReadData("Day0", "charactererror")
+                //charactererror
+            };
+
+            List<string> normaluser = new List<string>
+            {
+                testData.ReadData("Day0", "nuser1"),
+                testData.ReadData("Day0", "npassword1"),
+                testData.ReadData("Day0", "nname1"),
+                testData.ReadData("Day0", "nsurname"),
+                testData.ReadData("Day0", "nemail"),
+                testData.ReadData("Day0", "nmediadownload"),
+                testData.ReadData("Day0", "nrole1")
+                
+            };
+            logging.CreateUserFieldValidation(userInfo,usererror,normaluser);
+        }
+
+        [Test, Description("Login | EditUser Field Validation")]
+        [Category("Data Independent")]
+        //[Ignore("NewEnvironment")]
+        public void TC_135035_EditUserFieldValidation()
+        {
+            List<string> userInfo = new List<string>
+            {
+                testData.ReadData("Day0", "username"),
+                testData.ReadData("Day0", "password"),
+                testData.ReadData("Day0", "user1"),
+                testData.ReadData("Day0", "name1"),
+                testData.ReadData("Day0", "surname"),
+                testData.ReadData("Day0", "user2")
+            };
+            logging.EditUserFieldValidation(userInfo);
+        }
+
+
+        [Test, Description("Login | Login Error validation")]
+        [Category("Data Independent")]
+        public void TC_135040_LoginErrorValidation()
+        {
+            List<string> userInfo = new List<string>
+            {
+                testData.ReadData("Day0", "username"),
+                testData.ReadData("Day0", "password"),
+                testData.ReadData("Day0", "username1"),
+                testData.ReadData("Day0", "user1"),
+                testData.ReadData("Day0", "error1"),
+                testData.ReadData("Day0", "error2")
+            };
+            logging.ValidateLoginErrorMsgs(userInfo);
+        }
+
+        [Test, Description("Login | Streaming Field Validation")]
+        [Category("Data Independent")]
+        public void TC_135052_StreamPageFieldValidation()
+        {
+            List<string> userInfo = new List<string>
+            {
+                testData.ReadData("Day0", "username"),
+                testData.ReadData("Day0", "password"),
+                testData.ReadData("Day0", "user1"),
+                testData.ReadData("Day0", "error1"),
+                testData.ReadData("Day0", "error2"),
+                testData.ReadData("Day0", "number"),
+                testData.ReadData("Day0", "email")
+            };
+            logging.ValidateStreamingErrorMsgs(userInfo);
+        }
+
+
+        [Test, Description("Login | User Role Validation")]
+        [Category("Data Independent")]
+       // [Ignore("NewEnvironment")]
+        public void TC_135054_UserRoleValidation()
+        {
+            List<string> userInfo = new List<string>
+            {
+                testData.ReadData("Day0", "user1"),
+                testData.ReadData("Day0", "password1"),
+                testData.ReadData("Day0", "user2"),
+                testData.ReadData("Day0", "password2")
+            };
+            logging.ValidateUserRole(userInfo);
+        }
+
+        [Test, Description("Login | User Activity Validation")]
+        [Category("Data Independent")]
+       // [Ignore("NewEnvironment")]
+        public void TC_136363_UserActivityValidation()
+        {
+            string username = testData.ReadData("Day0", "username");
+            string password = testData.ReadData("Day0", "password");
+            logging.ValidateUserActivityLog(username,password);
+        }
+
+    }
+}

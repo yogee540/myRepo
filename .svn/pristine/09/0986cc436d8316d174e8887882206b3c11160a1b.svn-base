@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<tests>
+  
+ <!-- <TestCase PBI_ID="132435_1_ClssifySessionMedia">
+    <TestData>
+      <Username_supervisor>auto_supervisor</Username_supervisor>
+      <Password>Password@1</Password>
+      <Email>mayank.tripathi@capita.co.uk</Email>
+      <ClassifySession>Yes</ClassifySession>
+      <Reason>Session Classification</Reason>
+    </TestData>
+  </TestCase>-->
+
+  <TestCase PBI_ID="132435_1_ClssifySessionMedia">
+    <TestData>
+      <Username_supervisor>auto_supervisor</Username_supervisor>
+      <Password>Test@123</Password>
+      <Email>mayank.tripathi@capita.co.uk</Email>
+      <ClassifySession>Yes</ClassifySession>
+      <Reason>Session Classification</Reason>
+    </TestData>
+  </TestCase>
+  
+  <!--<TestCase PBI_ID="132435_2_declasifySessionMedia">
+    <TestData>
+      <Username_supervisor>auto_supervisor</Username_supervisor>
+      <Password>Password@1</Password>
+      <Email>mayank.tripathi@capita.co.uk</Email>
+      <ClassifySession>No</ClassifySession>
+      <Reason>Session Classification</Reason>
+    </TestData>
+  </TestCase>-->
+
+  <TestCase PBI_ID="132435_2_declasifySessionMedia">
+    <TestData>
+      <Username_supervisor>auto_supervisor</Username_supervisor>
+      <Password>Test@123</Password>
+      <Email>mayank.tripathi@capita.co.uk</Email>
+      <ClassifySession>No</ClassifySession>
+      <Reason>Session Classification</Reason>
+    </TestData>
+  </TestCase>
+  </tests>

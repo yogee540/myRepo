@@ -1,0 +1,284 @@
+﻿using AventStack.ExtentReports;
+using OpenQA.Selenium;
+using SeleniumFramework.UIOperations;
+using SeleniumFramework.Utilities.reportUtil;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+using SeleniumFramework.Utilities.XmlUtil;
+using System.IO.Compression;
+using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.parser;
+using SeleniumFramework.Utilities.common;
+using System.Reflection;
+
+namespace SeleniumFramework.BusinessFunctions
+{
+    public class CommonFeatures : UIActions
+    {
+        public static IWebElement txt_Search => driver.FindElement(By.CssSelector("input[type='search']"));
+        public static IWebElement lbl_StatusVal => driver.FindElement(By.XPath("//td[contains(@class,'user-table-status')]"));
+        public static IWebElement slct_year => driver.FindElement(By.ClassName("yearselect"));
+        public static IWebElement slct_month => driver.FindElement(By.ClassName("monthselect"));
+
+        //Tabs
+        public static IWebElement Tab_Users => driver.FindElement(By.XPath("//a[@id='users-tab']"));
+        public static IWebElement Tab_Activities => driver.FindElement(By.XPath("//a[@id='activities-tab']"));
+        public static IWebElement Tab_Organisations => driver.FindElement(By.CssSelector("#organisation-tab"));
+        public static IWebElement Tab_Stream => driver.FindElement(By.CssSelector("#stream-tab"));
+        public static IWebElement Tab_Reports => driver.FindElement(By.CssSelector("a#reports-tab"));
+
+        //Links
+        public static IWebElement Link_Edit => driver.FindElement(By.XPath("//a[text()='Edit']"));
+        public static IWebElement Link_ViewSession => driver.FindElement(By.XPath("//table[@id='activities']//a[text()='1']"));
+        public static IWebElement Link_Activity => driver.FindElement(By.XPath("//a[text()='Activity']"));
+        public static List<IWebElement> Allrows => driver.FindElements(By.CssSelector("tr")).ToList();
+
+        public static string sysUsername = System.Environment.UserName;
+        XmlReader xmlReader;
+
+        public bool Search(string Name)
+        {
+            Wait(10);
+            bool result = false;
+            if (!txt_Search.GetAttribute("value").Equals(Name))
+            {
+                txt_Search.Clear();
+                txt_Search.SendKeys(Name);
+                Wait(2);
+            }
+            if (driver.FindElement(By.TagName("td")).Text.Equals("No matching records found") || driver.FindElement(By.TagName("td")).Text.Equals("No data available"))
+            {
+                ExtentReportUtil.report.Log(Status.Info, "No matching records found for '" + Name + "'");
+                return result;
+            }
+            else
+            {
+                result = true;
+                ExtentReportUtil.report.Log(Status.Pass, "Matching record found for '" + Name + "'");
+            }
+            return result;
+        }
+
+        public string CheckStatus(string Name)
+        {
+            string status = string.Empty;
+            if (Search(Name))
+            {
+                status = lbl_StatusVal.Text;
+            }
+            return status;
+        }
+
+        public void SelectDate(IWebElement calenderElement, string ddmmyyyy)
+        {
+            string[] dmy = ddmmyyyy.Split('/');
+            int date = Convert.ToInt32(dmy[0]);
+            string month = dmy[1];
+            month = Convert.ToString((Convert.ToInt32(month) - 1));
+            string year = dmy[2];
+
+            ClickOn(calenderElement);
+            SelectFromDropDown(SelectionType.selectByValue, slct_year, year);
+            SelectFromDropDown(SelectionType.selectByValue, slct_month, month);
+            IWebElement dateElement = driver.FindElement(By.XPath("//td[@class='available' or @class='weekend available'][text()='" + Convert.ToString(date) + "']"));
+            ClickOn(dateElement);
+        }
+
+        public void ClickTab(string TabName)
+        {
+            try
+            {
+                switch (TabName.ToUpper())
+                {
+                    case "ORGANISATIONS":
+                        ClickOn(Tab_Organisations);
+                        break;
+                    case "ACTIVITIES":
+                        ClickOn(Tab_Activities);
+                        break;
+                    case "USERS":
+                        ClickOn(Tab_Users);
+                        break;
+                    case "STREAM":
+                        ClickOn(Tab_Stream);
+                        break;
+                    case "REPORTS":
+                        ClickOn(Tab_Reports);
+                        break;
+                }
+            }catch(Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Fail, "Exception occured on <b>ClickTab</B> method => " + ex.ToString());
+                TakeScreenshot();
+            }
+        }
+
+        public void ClickEdit()
+        {
+            ClickOn(Link_Edit);
+        }
+
+        public void ClickActivityLink()
+        {
+            ClickOn(Link_Activity);
+        }
+
+        public void ClickViewSession()
+        {
+            ClickOn(Link_ViewSession);
+        }
+
+        public void VerifySearchFilter(string search1, string search2, string search3)
+        {
+            //search the first search string
+            Set_Textbox(txt_Search, search1);
+            string cssSelect = "td[title = 'X']".Replace("X", search1);
+            IWebElement firstrow = driver.FindElement(By.CssSelector(cssSelect));
+            if (IsElementDisplayedNEnabled(firstrow))
+            {
+                Highlight(firstrow);
+                if (Allrows.Count == 1)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "One record present::As exepcted");
+                    TakeScreenshot();
+                }
+                else
+                {
+                    ExtentReportUtil.report.Log(Status.Fail, "More record present::NOt As exepcted:");
+                    TakeScreenshot();
+                }
+            }
+
+            //search partial name 
+            Set_Textbox(txt_Search, search2);
+            //cssSelect = "//td[contains(text(),'test')]";
+
+            cssSelect = "//td[contains(text(),'" + search2 + "')]";
+
+            foreach (IWebElement onerow in Allrows)
+            {
+                Highlight(onerow);
+            }
+
+            //search by number
+            Set_Textbox(txt_Search, search3);
+            //cssSelect = "//td[contains(text(),'test')]";
+
+            cssSelect = "//td[contains(text(),'" + search3 + "')]";
+
+            foreach (IWebElement onerow in Allrows)
+            {
+                Highlight(onerow);
+            }
+        }
+
+        private void ReadXML()
+        {
+            xmlReader = new XmlReader();
+            xmlReader.LoadXML(GlobalVariables.EnvConfigurationPath);
+        }
+
+        public void Environment01()
+        {
+            ReadXML();
+
+            GlobalVariables.URL = xmlReader.ReadTagValue("URL1");
+            GlobalVariables.APIURL = xmlReader.ReadTagValue("APIURL1");
+
+            GlobalVariables.Scheme = xmlReader.ReadTagValue("QA_Scheme1");
+            GlobalVariables.AuthKey = xmlReader.ReadTagValue("QA_AuthKey1");
+            GlobalVariables.SessionId = xmlReader.ReadTagValue("QA_SessionId1");
+
+            GlobalVariables.Scheme1 = xmlReader.ReadTagValue("QA_Scheme2");
+            GlobalVariables.AuthKey1 = xmlReader.ReadTagValue("QA_AuthKey2");
+        }
+
+        public void Environment02()
+        {
+            ReadXML();
+
+            GlobalVariables.URL = xmlReader.ReadTagValue("URL2");
+            GlobalVariables.APIURL = xmlReader.ReadTagValue("APIURL2");
+
+            GlobalVariables.Scheme = xmlReader.ReadTagValue("QAE_Scheme1");
+            GlobalVariables.AuthKey = xmlReader.ReadTagValue("QAE_AuthKey1");
+            GlobalVariables.SessionId = xmlReader.ReadTagValue("QAE_SessionId1");
+
+            GlobalVariables.Scheme1 = xmlReader.ReadTagValue("QAE_Scheme2");
+            GlobalVariables.AuthKey1 = xmlReader.ReadTagValue("QAE_AuthKey2");
+        }
+
+        public void Environment03()
+        {
+            ReadXML();
+
+            GlobalVariables.URL = xmlReader.ReadTagValue("URL3");
+            GlobalVariables.APIURL = xmlReader.ReadTagValue("APIURL3");
+            GlobalVariables.Scheme = xmlReader.ReadTagValue("Scheme3");
+            GlobalVariables.AuthKey = xmlReader.ReadTagValue("AuthKey3");
+            GlobalVariables.SessionId = xmlReader.ReadTagValue("SessionId3");
+        }
+
+        public string ExtractTextFromPDF(string pdfFileName)
+        {
+            StringBuilder result = new StringBuilder();
+            // Create a reader for the given PDF file
+            using (PdfReader reader = new PdfReader(pdfFileName))
+            {
+                // Read pages
+                for (int page = 1; page <= reader.NumberOfPages; page++)
+                {
+                    SimpleTextExtractionStrategy strategy =
+                        new SimpleTextExtractionStrategy();
+                    string pageText =
+                        PdfTextExtractor.GetTextFromPage(reader, page, strategy);
+                    result.Append(pageText);
+                }
+            }
+            return result.ToString();
+        }
+
+        public void DeleteDownloadedFile(string FileName)
+        {
+            try
+            {
+                string pdfFile = "C:\\Users\\" + sysUsername + "\\Downloads\\" + FileName;
+                if (File.Exists(pdfFile))
+                {
+                    File.Delete(pdfFile);
+                    ExtentReportUtil.report.Log(Status.Pass, "File at path -- " + pdfFile + " deleted successfully.");
+                }
+                else
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "File does not exist");
+                }
+            }
+            catch(FileNotFoundException ex)
+            {
+                ExtentReportUtil.report.Log(Status.Fail, "File not found at path");
+            }
+        }
+
+        public  void ZipFolder()
+        {
+            
+            string newfileName = "Result" + new Common().GetTimeStamp();
+            ZipFolderpath = reportFolder + newfileName;
+
+            ZipFile.CreateFromDirectory(GlobalVariables.logReportFolder, ZipFolderpath +".zip" );
+
+        }
+
+        public string GetVariableName()
+        {
+
+            TypeInfo t = typeof(GlobalVariables).GetTypeInfo();
+            FieldInfo[] fields = t.GetFields();
+
+            return null;
+        }
+    }
+}

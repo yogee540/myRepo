@@ -1,0 +1,571 @@
+﻿using AventStack.ExtentReports;
+using OpenQA.Selenium;
+using SeleniumFramework.UIOperations;
+using SeleniumFramework.Utilities.common;
+using SeleniumFramework.Utilities.reportUtil;
+using System;
+using System.Collections.Generic;
+using SeleniumFramework.BusinessFunctions;
+using System.IO;
+using OpenQA.Selenium.Support.UI;
+using System.Threading;
+
+namespace SeleniumFramework.Pages
+{
+   public class ActivitiesPage : UIActions
+   {
+        CommonFeatures commonFeatures = new CommonFeatures();
+        Common commonPage = new Common();
+
+        //Activities Objects
+        public static IWebElement Link_ViewSession => driver.FindElement(By.XPath("//table[@id='activities']//a[text()='1']"));
+        public static IWebElement Link_ViewSession_All => driver.FindElement(By.XPath("//table[@id='activities']//a[text()='View Session (']"));
+        public static IWebElement Toggle_ClassifySession => driver.FindElement(By.XPath("//div[@id='visual-sensitive']"));
+        public static IWebElement Input_ClassifyReason => driver.FindElement(By.XPath("//div[@class='panel-body center-text']/textarea"));
+        public static IWebElement Btn_ClassifySubmit => driver.FindElement(By.XPath("//div[@class='panel-body center-text']/button[text()='SUBMIT']"));
+        public static IWebElement Btn_ClassifyCancel => driver.FindElement(By.XPath("//div[@class='panel-body center-text']/button[text()='CANCEL']"));
+        public static IWebElement ClassifySession_ON => driver.FindElement(By.XPath("//span[@class='x-toggle-container large x-toggle-container-checked']/div[@id='visual-sensitive']"));
+        public static IWebElement ClassifySession_OFF => driver.FindElement(By.XPath("//span[@class='x-toggle-container large']/div[@id='visual-sensitive']"));
+        public static IWebElement SenstiveWarning => driver.FindElement(By.XPath("//span[@title='Sensitive']"));
+        public static IWebElement Btn_ReturnToActivities => driver.FindElement(By.XPath("//button[@id='return-to-activities-list-button']"));
+        public static IWebElement Link_Activity => driver.FindElement(By.XPath("//a[text()='Activity']"));
+        public static IWebElement Msg_OrgCreationFailed => driver.FindElement(By.XPath("//td[text()='Organisation create failed: duplicate organisation']"));
+        public static IWebElement Btn_DownloadAudit => driver.FindElement(By.XPath("//button[text()=' Download Audit PDF']"));
+        public static IWebElement Calendar => driver.FindElement(By.XPath("//i[@class='glyphicon glyphicon-calendar fa fa-calendar']"));
+        public static IWebElement Table_Activities => driver.FindElement(By.XPath("//table[@id='activities']"));
+        public static IWebElement txt_Search => driver.FindElement(By.CssSelector(".form-control.input-sm"));
+        public static IWebElement Lnk_Calender_ThisMonth => driver.FindElement(By.XPath("//li[text()='This Month']"));
+        public static IWebElement Link_ActivitiesTab => driver.FindElement(By.CssSelector("a#activities-tab"));
+        public static IWebElement Span_DateRange => driver.FindElement(By.CssSelector("div#reportrange span"));
+        public static IWebElement Li_30days => driver.FindElement(By.XPath("//div[@class='ranges']/ul/li[@data-range-key='Last 30 Days']"));
+        public static IWebElement Button_Apply => driver.FindElement(By.CssSelector("button.applyBtn.btn.btn-sm.btn-success"));
+        public static IWebElement Td_ViewSession => driver.FindElement(By.XPath("//table[@id='activities']/tbody/tr[1]/td[5]"));
+        //public static IWebElement Id_SessionID => driver.FindElement(By.XPath("//td[@id='caller-info-table-session-id']"));
+        public static IWebElement Id_SessionID => driver.FindElement(By.XPath("//span[@title='Session Id']/following::span[1]"));
+        public static IWebElement TableHeader_DateTime => driver.FindElement(By.XPath("//th[@class='sorting_asc'][text()='Date/Time']"));
+        public static IWebElement Calender_Arrow => driver.FindElement(By.XPath("//div[@id='reportrange']//b"));
+        public static IWebElement Lnk_Calender_CustomRange => driver.FindElement(By.XPath("//li[text()='Custom Range']"));
+        public static IWebElement StartDate => driver.FindElement(By.Name("daterangepicker_start"));
+        public static IWebElement EndDate => driver.FindElement(By.Name("daterangepicker_end"));
+        public static IWebElement Btn_Apply_Calender => driver.FindElement(By.XPath("//button[@class='applyBtn btn btn-sm btn-success']"));
+        public static IWebElement Media_Deleted_Msg => driver.FindElement(By.XPath("//*[contains(text(),'has been deleted')]"));
+        public static IWebElement Btn_Media_DownloadPhoto => driver.FindElement(By.XPath("//button[text()='Download Photo']"));
+        public static IWebElement Btn_Media_DownloadVideo => driver.FindElement(By.XPath("//button[text()='Download Video']"));
+        public static IWebElement Tab_Users => driver.FindElement(By.CssSelector("#users-tab"));
+        public static IWebElement DrpDwn_Organisation => driver.FindElement(By.XPath("//label[text()='Organisation:']//following-sibling::div//select"));
+        public static IWebElement Warning_Msg => driver.FindElement(By.XPath("//*[contains(text(),'Support Operator is standalone role.It cannot exist in combination with any other role')]"));
+        public static IWebElement Btn_Cancel => driver.FindElement(By.XPath("//*[text()='Cancel']"));
+        public static IWebElement Edit_Link => driver.FindElement(By.XPath("//*[text()='Edit']"));
+        IWebElement NoRecords_Msg => driver.FindElement(By.XPath("//*[contains(text(),No matching records found')]"));
+        IWebElement Tab_Activities => driver.FindElement(By.XPath("//a[@id='activities-tab']"));
+        public static IWebElement Span_ViewSessionForSensitiveData => driver.FindElement(By.XPath("//span[@title='Sensitive']/preceding-sibling::span"));
+
+        //View Session Activities Objects
+        public static IWebElement Div_VideoThumbnail => driver.FindElement(By.XPath("//div[@class='video-thumbnail']"));
+        public static IWebElement Btn_VideoDownloadl => driver.FindElement(By.XPath("//button[text()='Download Video']"));
+
+
+        public static string SensitiveWarning_XPath = "//span[@title='Sensitive']";
+        public static IWebElement Input_Search => driver.FindElement(By.XPath("//input[@type='search']"));
+        
+        //Wait Object on Activities Page
+        public static IWebElement Pagination_Next => driver.FindElement(By.Id("activities_next"));
+        public static string sysUsername = System.Environment.UserName;
+
+        public bool WaitForActivitiesPageToLoad()
+        {
+            bool flag = false;
+
+            WebDriverWait Wait = new WebDriverWait(driver, TimeSpan.FromMinutes(2));
+            try
+            {
+                Wait.Until(ExpectedConditions.ElementIsVisible(By.Id("activities_next")));
+                for (int i = 0; i < 100; i++)
+                {
+                    if (Pagination_Next.Displayed)
+                    {
+                        flag = true;
+                        ExtentReportUtil.report.Log(Status.Pass, "Activities Page Loaded");
+                        break;
+                    }
+                    else
+                    {
+                        Thread.Sleep(3000);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Fail, "Exception Occurred: " + ex.ToString());
+            }
+
+            return flag;
+        }
+
+        public ActivitiesPage ClassifySession(string Resaon)
+        {
+            Type t = SensitiveWarning_XPath.GetType();
+            string name = t.Name;
+            commonFeatures.ClickTab("Activities");
+            Wait(7);
+            WaitForActivitiesPageToLoad();
+            SelectDateRange_Activities("Last 30 Days");
+            Wait(7);
+            WaitForActivitiesPageToLoad();
+            commonFeatures.Search("View Session (1)");
+            commonFeatures.ClickViewSession();
+            Wait(10);
+            ClickOn(Toggle_ClassifySession);
+            Wait(1);
+            EnterText(Input_ClassifyReason, Resaon);
+            ClickOn(Btn_ClassifySubmit);
+            VerifySessionClassified();
+            ClickReturnToActivities();
+            WaitForActivitiesPageToLoad();
+            commonFeatures.Search("View Session (1)");
+            //VerifySensitiveWarning(ClassifySession);
+            return new ActivitiesPage();
+        }
+
+        public ActivitiesPage VerifySessionClassified()
+        {
+            try
+            {
+                if (ClassifySession_ON.Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Info, "Session Classified.");
+                    TakeScreenshot();
+                }
+                Wait(2);                
+            }
+            catch (Exception)
+            {
+                if (ClassifySession_OFF.Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Info, "Session Declassified.");
+                    TakeScreenshot();
+                }
+            }
+            return new ActivitiesPage();
+        }
+
+        public ActivitiesPage ClickReturnToActivities()
+        {
+            try
+            {
+                ClickOn(Btn_ReturnToActivities);
+                WaitForActivitiesPageToLoad();
+
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Fail, "Exception occurred in ClickReturnToActivities() method -- " + ex.ToString());
+                TakeScreenshot();
+            }
+            return new ActivitiesPage();
+        }
+
+        public ActivitiesPage VerifySensitiveWarning(string SensitiveWarningDisplayed)
+        {
+            try
+            {
+                switch (SensitiveWarningDisplayed.ToUpper())
+                {
+                    case "YES":
+                        if (SenstiveWarning.Displayed)
+                        {
+                            ExtentReportUtil.report.Log(Status.Pass, "Warning displayed.");
+                        }
+                        break;
+                    case "NO":
+                        ElementNotPresent(SensitiveWarning_XPath);
+                        ExtentReportUtil.report.Log(Status.Pass, "Warning Not displayed.");
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Fail, "Exception occurred in VerifySensitiveWarning() method -- " + ex.ToString());
+            }
+            return new ActivitiesPage();
+        }
+
+        public ActivitiesPage VerifyHelpTextForClassifyDeclassifySession(string ParaValue)
+        {
+            try
+            {
+                IList<IWebElement> Help_Classify = driver.FindElements(By.XPath("//div[@class='panel-collapse collapse in']//p"));
+                foreach (IWebElement el in Help_Classify)
+                {
+                    string para = el.GetAttribute("innerText");
+                    if (para.Contains(ParaValue))
+                    {
+                        ExtentReportUtil.report.Log(Status.Pass, "Content displayed.");
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Fail, "Exception occurred in VerifyHelpTextForClassifyDeclassifySession() method -- " + ex.ToString());
+            }
+
+            return new ActivitiesPage();
+        }
+
+        public void Activities_MediaVew(String ReferenceNum, String SessionLink, String Session_Info, String Session_Details)
+        {
+            commonFeatures.ClickTab("Activities");
+            Wait(25);
+            IsElementDisplayedNEnabled(txt_Search);
+            ExtentReportUtil.report.Log(Status.Pass, "Search field displayed successfully.");
+            ClickOn(Calender_Arrow);
+            ClickOn(Lnk_Calender_ThisMonth);
+            Wait(25);
+            EnterText(txt_Search, ReferenceNum); //"SG123456789"
+            Click_EventByData_N_Index(SessionLink);
+            Check_EventByData(Session_Info);
+            Check_EventByData(Session_Details);
+        }
+
+        public void SupportOperator_UsersTab(String ReferenceNum, String SessionLink, String Session_Info, String Session_Details)
+        {
+            ClickOn(Tab_Activities);
+            Wait(5);
+            IsElementDisplayedNEnabled(txt_Search);
+            ExtentReportUtil.report.Log(Status.Pass, "Search field displayed successfully.");
+            ClickOn(Calender_Arrow);
+            ClickOn(Lnk_Calender_ThisMonth);
+            Wait(25);
+            EnterText(txt_Search, ReferenceNum);        //"SG123456789"
+            Click_EventByData_N_Index(SessionLink);
+            Check_EventByData(Session_Info);
+            Check_EventByData(Session_Details);
+        }
+
+        public void VerifyUserCreatedInActivity()
+        {
+            By UserCreated_XPath = By.XPath("//td[text()='User created: [" + Username + "]']");
+            try
+            {
+                ClickOn(Link_Activity);
+                if (driver.FindElement(UserCreated_XPath).Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "User created and displayed in activity -- " + Username);
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public void VerifyUserUpdatedInActivity(string UpdatedUserName)
+        {
+            By UserCreated_XPath = By.XPath("//td[text()='User updated: [" + UpdatedUserName + "]']");
+            try
+            {
+                ClickOn(Link_Activity);
+                WaitForActivitiesPageToLoad();
+                SortActivityTableWithDateDesc();
+                if (driver.FindElement(UserCreated_XPath).Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "User created and displayed in activity -- " + UpdatedUserName);
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public void VerifyUserUpdateFail_DuplicateUserName_InActivity()
+        {
+            By UserNameCreated_XPath = By.XPath("//*[contains(text(),'User update failed: username exists')]");
+            try
+            {
+                ClickOn(Link_Activity);
+                WaitForActivitiesPageToLoad();
+                SortActivityTableWithDateDesc();
+                if (driver.FindElement(UserNameCreated_XPath).Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "User update failed displayed in activity");
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public void VerifyPasswordUpdateFail_IncorrectCurrentPassword_InActivity()
+        {
+            By IncorrectCurrentPassword_Msg = By.XPath("//*[contains(text(),'Password update failed: current password is incorrect')]");
+            try
+            {
+                ClickOn(Link_Activity);
+                WaitForActivitiesPageToLoad();
+                SortActivityTableWithDateDesc();
+                if (driver.FindElement(IncorrectCurrentPassword_Msg).Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Password update failed displayed in activity");
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public void VerifyPasswordUpdateFail_PreviousCurrentPassword_InActivity()
+        {
+            By IncorrectCurrentPassword_Msg = By.XPath("//*[contains(text(),'Password update failed: password is used currently')]");
+            try
+            {
+                ClickOn(Link_Activity);
+                WaitForActivitiesPageToLoad();
+                SortActivityTableWithDateDesc();
+                //SortActivityTableWithDateDesc();
+                if (driver.FindElement(IncorrectCurrentPassword_Msg).Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Password update failed displayed in activity");
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+
+        public void VerifyOrgCreationFailed()
+        {
+            try
+            {
+                if (Msg_OrgCreationFailed.Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Organisation Creation Failed message displayed in Activity of User");
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public void VerifyDownloadAuditPDFButton()
+        {
+            try
+            {
+                ClickOn(Link_ViewSession_All);
+                if (Btn_DownloadAudit.Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Download Audit PDF is displayed");
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public void SelectDateRange_Activities(string DateRange)
+        {
+
+            string DateRange_XPath = "//div[@class='ranges']//li[text()='" + DateRange + "']";
+            try
+            {
+                if (Calendar.Displayed)
+                {
+                    WaitForActivitiesPageToLoad();
+                    ClickOn(Calendar);
+                    ClickOn(driver.FindElement(By.XPath(DateRange_XPath)));
+                    Wait(10);
+                    WaitForActivitiesPageToLoad();
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public void Download_AuditPDF_AllAdminRole(string pdf)
+        {
+            string sysUsername = System.Environment.UserName;
+            ClickOn(Link_ActivitiesTab);
+            Wait(30);
+            ClickOn(Span_DateRange);
+            ClickOn(Li_30days);
+            Wait(30);
+            //ClickOn(Button_Apply);
+            ClickOn(Td_ViewSession);
+            VerifyDownloadedFile(pdf);
+            commonFeatures.DeleteDownloadedFile(pdf);
+        }
+
+
+        public void AuditPDF_SensitiveMedia(string pdf)
+        {
+            string sysUsername = System.Environment.UserName;
+            ClickOn(Link_ActivitiesTab);
+            Wait(25);
+            ClickOn(Span_DateRange);
+            ClickOn(Li_30days);
+            Wait(25);
+
+            //Search Keyword 'Sensitive'. this data is available for May 15, 2019 credentials: yogee_operator   &  MPassword@123
+            Set_Textbox(Input_Search, "Sensitive");
+
+            ClickOn(Span_ViewSessionForSensitiveData);
+            Wait(2);
+            VerifyDownloadedFile(pdf);
+
+
+        }
+
+        public void VerifyDownloadedFile(string pdf)
+        {
+            if (IsElementDisplayedNEnabled(Btn_DownloadAudit))
+            {
+                ClickOn(Btn_DownloadAudit);
+                Wait(5);
+                string pdfFile = "C:\\Users\\" + sysUsername + "\\Downloads\\" + pdf;
+                if (File.Exists(pdfFile))
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "PDF downloaded to local");
+                }
+                else
+                {
+                    ExtentReportUtil.report.Log(Status.Fail, "PDF not found");
+                }
+
+            }
+            else
+            {
+                ExtentReportUtil.report.Log(Status.Fail, "Audit PDF Button mising/disabled");
+            }
+        }
+
+        public void VerifyMonthOldMediaIsDeleted(string StartDt, string StartDt1, string EndDt, string EndDt1)
+        {
+            try
+            {
+                ClickOn(Calender_Arrow);
+                ClickOn(Lnk_Calender_CustomRange);
+                //ClearText(StartDate);
+                Wait(1);
+                EnterText(StartDate, StartDt1);
+                Wait(1);
+                //ClearText(EndDate);
+                Wait(1);
+                EnterText(EndDate, EndDt1);
+                Wait(1);
+                ClickOn(Btn_Apply_Calender);
+                Wait(25);
+                commonFeatures.Search("View Session (1)");
+                Wait(1);
+                ClickOn(Link_ViewSession);
+                CheckIfElementIsPresent(Media_Deleted_Msg);
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public void VerifyMonthLessOldMediaIsNotDeleted(string StartDt, string StartDt1, string EndDt, string EndDt1)
+        {
+            try
+            {
+                ClickOn(Calender_Arrow);
+                ClickOn(Lnk_Calender_CustomRange);
+                //ClearText(StartDate);
+                //EnterText(StartDate, StartDt);
+                EnterText(StartDate, StartDt1);
+                //ClearText(EndDate);
+                //EnterText(EndDate, EndDt);
+                EnterText(EndDate, EndDt1);
+                ClickOn(Btn_Apply_Calender);
+                Wait(15);
+                ClickOn(Link_ViewSession);
+                if (CheckIfElementIsPresent(Btn_Media_DownloadPhoto) || CheckIfElementIsPresent(Btn_Media_DownloadVideo))
+                {
+                    ExtentReportUtil.report.Log(AventStack.ExtentReports.Status.Pass, "User can download Media which is less than a month old");
+                }
+                else
+                {
+                    ExtentReportUtil.report.Log(AventStack.ExtentReports.Status.Pass, "User unable to download Media which is less than a month old");
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public void SortActivityTableWithDateDesc()
+        {
+            ClickOn(TableHeader_DateTime);
+        }
+
+        public void VerifyTableHeaders(string HeaderName)
+        {
+            By TableHeader = By.XPath("//table[@id='activities']//th[text()='" + HeaderName + "']");
+            WaitForObject(driver.FindElement(TableHeader), 30);
+            try
+            {
+                if (driver.FindElement(TableHeader).Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Table Header -- " + HeaderName + " displayed.");
+                }
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+        public void VerifyTextInPDF(string FileName)
+        {
+            string pdfFile = "C:\\Users\\" + sysUsername + "\\Downloads\\" + FileName;
+            Wait(30);
+            ClickOn(Link_ViewSession_All);
+            Wait(2);
+            ClickOn(Btn_DownloadAudit);
+            string sessionID = Id_SessionID.GetAttribute("innerText");
+            Wait(10);
+            try
+            {
+                if (commonFeatures.ExtractTextFromPDF(pdfFile).Contains(sessionID))
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Session ID -- " + sessionID + " matches on UI and PDF");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+
+        public void VerifyMedia()
+        {
+            try
+            {
+                if (Div_VideoThumbnail.Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Media is displayed.");
+                }
+                if (Btn_VideoDownloadl.Displayed)
+                {
+                    ExtentReportUtil.report.Log(Status.Pass, "Download Video button is displayed.");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ExtentReportUtil.report.Log(Status.Error, "Exception Occurred: " + ex.ToString());
+            }
+        }
+    }
+}

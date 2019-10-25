@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TestRunConfiguration>
+  <Environment>QA</Environment>
+  <Execution>Server</Execution>
+  <URL1>https://qatesting.eye999.co.uk/eye/login</URL1>
+  <URL2>https://9idevtest02.eye999.co.uk/eye/login</URL2>
+  <URL3>https://9idevtest01.eye999.co.uk/eye/login</URL3>
+  <!-- To run test on Pre-Prod there are restrictions for Superuser
+  Please contact Ciepiaszuk, Tomasz (Secure Solutions & Services) <Tomasz.Ciepiaszuk@capita.co.uk>  for access-->
+  <!--CHROME-->
+  <!--IE    not implemented-->
+  <!--FIREFOX    not implemented-->
+  <!--EDGE    not implemented-->
+  <!--Below are the headless browsers-->
+  <!--PHANTOMJS    not implemented-->
+  <!--HTMLUNIT     not implemented-->
+  <!--CHROMEHEADLESS-->
+  <Browser>CHROME</Browser>
+  <APIURL1>https://qatesting.eye999.co.uk/eye-service/resource/</APIURL1>
+  <APIURL2>https://9idevtest02.eye999.co.uk/eye-service/resource/</APIURL2>
+  <APIURL3>https://9idevtest01.eye999.co.uk/eye-service/resource/</APIURL3>
+  <!-- FOR PRE-PROD Create a superuser with admin role and get it's authkey from Network and create new tags for-->
+
+  <!-- Auth Key For QA Testing env. -->
+  <QA_Scheme1>cWF0ZXN0a</QA_Scheme1>
+  <QA_AuthKey1>W5nwrFhdXRvX29wX2FkbWluX3N1cHVzZXLCsTpSU0EyMDQ4OjJmWS93bjQvWVhpeHJoZnhDU0JjMnN5MzhPZUwxQmNvU3lyQTQrV1E1enc4Ky9UcVYzeWhqODJTOUY2QmFicXJPbk4wb2NwNHFVZTVnQlB1dmtHbjBrY0xqMkF2cUtBQ1gxSDdXektXRjU5Q2p0MFBwMnJMeXdkak9XREdINHB0dmtNb3ZVaExTNWVidTE3SzBRR2Z1QTl4cmlMMVdqcGVtc0RUOC9pRWJNSnQvSkpNKzVQditha3dUSGp5SVpDMmkwODIxdTZhdGRnUGxJNVV5eU1VYXp4WndnOUFuZmNnZktZZ3pZb0Joc2xRTmRyaDk0RDZqYklISkppWkRjL1ZwalFxenpIN29kQjFMK2t4eTFJT1lUbFJPUzZhbHZQZGdZaW9LZkxvSUI3TEt3dWhzZUNjcEQ3VDRTQjYxQnUrbmIxMEZOT1c1bER5aVJlaGdsQlZ2QT09</QA_AuthKey1>
+  <QA_SessionId1>42b7860623ae01015f56f6bed8247fd9</QA_SessionId1>
+  
+  <QA_Scheme2>cWF0ZXN0a</QA_Scheme2>
+  <QA_AuthKey2>W5nwrF1cGRhdGV1c2VywrE6UlNBMjA0ODp6OWNXRUo5YTNmRzJZWmZuUVRoNW1WUzc1YU5NN0xBcFJJeElicUpiUitCZS90K3gwM2xqemVOa05TSEY4ZGVzUjNJT0J1SG1rT2hsclpJMFNUYUhQUFF4bHhSN1V2VVZwY0x1cDlVSTlaZHhIY2JJUy80V3lBeTh3U2xub2JMY25uVnRnNTdrbVZ4bjBLL05TUVVrNkdLbUhJVDlkRHFITHRuc0VnUlQyY1NadnVmV253YXBvYzRSbFVqd1pOenFRc2dxaWwvWEhLTkFzY0h3TklTZFp3bktLekhDMjE0M0Rsa1NDaGk5NVo0eHArdEJSSUtFUGUyL1JVYXRQaHdHZ0I3UGd1SUgyOVowK1lxT1ZhWENwYTVaWUxoM09hWFRuZTFGczI2N0c0OVJtNDRtRTkyTlo5TDZCZlk0L0R6aElQcFVjSVk1b05wYnpBd0tUdUdWNWc9PQ==</QA_AuthKey2>
+  <QA_SessionId2></QA_SessionId2>
+  
+  <!-- Auth Key For 9idevtest02 env. -->
+  <Dev_Scheme1>OWlkZXZ0Z</Dev_Scheme1>
+  <Dev_AuthKey1>XN0MDLCsXNhY2hpbsKxOlJTQTIwNDg6U2ZxNE9TK1QxUHgyb2x4RURnaElYKzdyMm9DNmxjK3ZsVHUxVkN3RHJ6NWdoVlRhaXphdnhUZjdzMkdjUk9uQklBbXZiU0lERTcreTA0emkwV0t5VzdiaXorOTdKUktmV0FUVWFETC9Zbm1tYlNYRzVzSnVXdnpOamhBQXlZTDRJTlJUNUxJKzNacFRSTUVJUTArMGJMb2xQSkZJcWh0R29aREhMdjVQTjE0WnFoazdwVzNsZERWSHo3Vk90Sk1VSUNhSXNmN0pJTmRaUWRCbHhYanloOTVGd1RzeXNaMTRvZDRCak1teFV3WkttWXJUdlROSjZZRnBUNVFLdG5vUDVDTVVXdkJjOUQ3WHJqb0hlOUtoaU5IREszVmFweU9VZkNSNGJxeHFSODZFTVZnSm9SbnFxYU5RQXlEUExuQks4T3JpazZzQVI3MHpscXIwRG94SXpnPT0=</Dev_AuthKey1>
+  <Dev_SessionId1>97455eeef2ee71553372ad869844e679</Dev_SessionId1>
+  
+  <Dev_Scheme2>OWlkZXZ0Z</Dev_Scheme2>
+  <Dev_AuthKey2>XN0MDLCsXVwZGF0ZXVzZXLCsTpSU0EyMDQ4OjQ3Q2NQM21lcXErUXk5RzdhM3ZaZzBHYTVmN01JMDNWbUZlbXBYY0Uwcy9TSmZuZ2c4NFk2cXVxck54Q3JYNmtzeEdDZHU2U1VaaSsrUW1ZczcxOEx1ZzVzWHZLSzBuRFRIV1FYT2JhZmw4VVJFRFZiL0E5RXEyc1ZJclQ1a3RtUFBGdzBvSG1Zc1FvTVdhbU9TcTF3T0FIZEZEQ1FaRU8yMDhONHF3UW9SNkJuYStObnQrMS93WXh0eEVKczJqZXlKcHZTN0pVdHU3RE04elB1c0N1dzgwNGZxdmlJOHU2NlJaeFoyQU5SUTJ0TTlzVzFRVUpUUWE3U09zUEp3VEdoZFk3dkN1UGMvcnE3akI3eWJtNCtTZVRDcWlKOUZtNVJ6Y2VDWEZvQ3doQkNCaXljdy85V29uaW94dEhwc0ljbHgzZG8wUmhCOWI5ekpOQjdBNUVQUT09</Dev_AuthKey2>
+  <Dev_SessionId2></Dev_SessionId2>
+  
+  <BrowserStackConfiguration>
+    <Server>hub-cloud.browserstack.com</Server>
+    <UserKey>yogeshpawar7</UserKey>
+    <AccessKey>jvhFGqXMWapAU5hKkxnm</AccessKey>
+    <BrowserName>Chrome</BrowserName>
+    <BrowserVersion>11.0</BrowserVersion>
+    <Device>iPhone X</Device>
+    <OSVersion>11.0</OSVersion>
+    <realmobile>true</realmobile>
+    <local>false</local>
+    <DeviceOrientation>portrait</DeviceOrientation>
+  </BrowserStackConfiguration>
+
+  <ReportConfiguration>
+    <ReportType>Extent</ReportType>
+    <ScreenshotType>External</ScreenshotType>
+    <!--ScreenshotType-->
+    <!--External-->
+    <!--Embedded-->
+    <VideoRecording>No</VideoRecording>
+  </ReportConfiguration>
+
+
+
+
+</TestRunConfiguration>
